@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'logo' => '<b>Hospital</b> Cleveland',
+    'logo' => '<b>Hospital</b> Cleveland ;D',
     'logo_img' => 'img/ClevelandLogo.jpg',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
