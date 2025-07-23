@@ -24,4 +24,6 @@ Route::middleware(['auth'])->group(function () {
     
 });
 
+Route::resource('/admin/medicamentos','App\Http\Controllers\MedicamentoController');
+
 require __DIR__.'/auth.php';
