@@ -87,7 +87,7 @@ return [
         'enabled' => false,
         'img' => [
             'path' => '/img/ClevelandLogo.jpg',
-            'alt' => 'Hospital Logo',
+            'alt' => 'Hospital Logoo',
             'class' => '',
             'width' => 50,
             'height' => 50,
