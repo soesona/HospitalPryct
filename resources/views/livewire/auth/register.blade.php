@@ -5,15 +5,43 @@
     <x-auth-session-status class="text-center" :status="session('status')" />
 
     <form wire:submit="register" class="flex flex-col gap-6">
-        <!-- Nombre -->
+        <!-- Nombre completo -->
         <flux:input
-            wire:model="name"
-            :label="__('Nombre')"
+            wire:model="nombreCompleto"
+            :label="__('Nombre completo')"
             type="text"
             required
             autofocus
             autocomplete="name"
             :placeholder="__('Nombre completo')"
+        />
+
+        <!-- Identidad -->
+        <flux:input
+            wire:model="identidad"
+            :label="__('Número de identidad')"
+            type="text"
+            required
+            maxlength="13"
+            :placeholder="__('Ej: 0801199912345')"
+        />
+
+        <!-- Fecha de nacimiento -->
+        <flux:input
+            wire:model="fechaNacimiento"
+            :label="__('Fecha de nacimiento')"
+            type="date"
+            required
+        />
+
+        <!-- Teléfono -->
+        <flux:input
+            wire:model="telefono"
+            :label="__('Teléfono')"
+            type="text"
+            required
+            maxlength="8"
+            :placeholder="__('Ej: 98765432')"
         />
 
         <!-- Correo electrónico -->

@@ -13,31 +13,42 @@ use Livewire\Component;
 #[Layout('components.layouts.auth')]
 class Register extends Component
 {
-    public string $name = '';
-
+    public string $nombreCompleto = '';
     public string $email = '';
-
     public string $password = '';
-
     public string $password_confirmation = '';
-
+    public string $identidad = '';
+    public string $fechaNacimiento = '';
+    public string $telefono = '';
     /**
      * Handle an incoming registration request.
      */
     public function register(): void
-    {
-          $validated = $this->validate([
-            'nombreCompleto' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
-        ]);
+{
+    $validated = $this->validate([
+        'nombreCompleto' => ['required', 'string', 'max:60'],
+        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+        'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+        'identidad' => ['required', 'string', 'size:13', 'unique:' . User::class],
+        'fechaNacimiento' => ['required', 'date'],
+        'telefono' => ['required', 'string', 'size:8'],
+    ]);
 
-        $validated['password'] = Hash::make($validated['password']);
+    // Hasheamos la contraseña
+    $validated['password'] = Hash::make($validated['password']);
 
-        event(new Registered(($user = User::create($validated))));
+    // Creamos el usuario con todos los campos validados
+    $user = User::create($validated);
 
-        Auth::login($user);
+    // Asignamos el rol (si estás usando Spatie)
+    $user->assignRole('Paciente');
 
-        $this->redirect(route('dashboard', absolute: false), navigate: true);
-    }
+    // Disparamos evento y autenticamos
+    event(new Registered($user));
+    Auth::login($user);
+
+    // Redirigimos
+    $this->redirect(route('dashboard', absolute: false), navigate: true);
+}
+
 }
