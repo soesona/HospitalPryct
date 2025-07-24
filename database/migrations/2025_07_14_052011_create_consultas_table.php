@@ -12,19 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('consultas', function (Blueprint $table) {
-        $table->id('codigoConsulta');
-        $table->unsignedBigInteger('codigoCita')->unique();
-        $table->string('codigoPaciente', 13);
-        $table->string('codigoDoctor', 13);
-        $table->unsignedBigInteger('codigoEnfermedad');
-        $table->text('diagnostico');
-        $table->text('observaciones')->nullable();
-        $table->timestamps();
+          $table->id('codigoConsulta');
+    $table->unsignedBigInteger('codigoCita')->unique();
+    $table->unsignedBigInteger('codigoPaciente');  
+    $table->unsignedBigInteger('codigoDoctor');    
+    $table->unsignedBigInteger('codigoEnfermedad');
+    $table->text('diagnostico');
+    $table->text('observaciones')->nullable();
+    $table->timestamps();
 
-        $table->foreign('codigoCita')->references('codigoCita')->on('citas')->onDelete('cascade');
-        $table->foreign('codigoPaciente')->references('codigoPaciente')->on('pacientes');
-        $table->foreign('codigoDoctor')->references('codigoDoctor')->on('doctores');
-        $table->foreign('codigoEnfermedad')->references('codigoEnfermedad')->on('enfermedades');
+    $table->foreign('codigoCita')->references('codigoCita')->on('citas')->onDelete('cascade');
+    $table->foreign('codigoPaciente')->references('codigoPaciente')->on('pacientes');
+    $table->foreign('codigoDoctor')->references('codigoDoctor')->on('doctores');
+    $table->foreign('codigoEnfermedad')->references('codigoEnfermedad')->on('enfermedades');
     });
 
     }

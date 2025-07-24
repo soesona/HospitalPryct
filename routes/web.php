@@ -4,6 +4,9 @@ use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,6 +28,8 @@ Route::middleware(['auth'])->group(function () {
 });
  Route::resource('/usuarios','App\Http\Controllers\UserController');
  Route::resource('/enfermedad','App\Http\Controllers\EnfermedadController');
+  Route::resource('/consulta','App\Http\Controllers\ConsultasController');
 Route::resource('/admin/medicamentos','App\Http\Controllers\MedicamentoController');
+Route::patch('/usuarios/{id}/cambiar-estado', [App\Http\Controllers\UserController::class, 'cambiarEstado'])->name('usuarios.cambiarEstado');
 
 require __DIR__.'/auth.php';

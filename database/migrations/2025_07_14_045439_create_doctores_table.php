@@ -15,11 +15,10 @@ return new class extends Migration
         $table->id('codigoDoctor');
         $table->unsignedBigInteger('codigoUsuario')->unique();
         $table->unsignedBigInteger('codigoEspecialidad');
-        $table->time('horarioInicio');
-        $table->time('horarioFin');
+        $table->boolean('is_active')->default(true);
         $table->timestamps();
         
-        $table->foreign('codigoUsuario')->references('id')->on('users')->onDelete('cascade');
+        $table->foreign('codigoUsuario')->references('codigoUsuario')->on('users');
         $table->foreign('codigoEspecialidad')->references('codigoEspecialidad')->on('especialidades');
           
         });

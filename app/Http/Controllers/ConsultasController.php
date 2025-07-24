@@ -3,17 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User; 
 
-class UserController extends Controller
+class ConsultasController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $usuarios = User::all(); 
-        return view('usuarios.index', compact('usuarios')); 
+       return view('consultas.index'); 
     }
 
     /**
@@ -63,13 +61,4 @@ class UserController extends Controller
     {
         //
     }
-
-    public function cambiarEstado($id)
-{
-    $usuarios = User::findOrFail($id);
-    $usuarios->is_active = !$usuarios->is_active;
-    $usuarios->save();
-
-    return redirect()->route('usuarios.index')->with('success', 'Estado del usuario actualizado correctamente.');
-}
 }

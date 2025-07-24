@@ -324,6 +324,7 @@ return [
             'text' => 'Medicamentos',
             'url' => 'admin/medicamentos',
             'icon' => 'fas fa-pills',
+            'can' => 'gestionar medicamentos',
         
         ],
         ['header' => 'account_settings'],
@@ -341,11 +342,20 @@ return [
             'text' => 'Usuarios',
             'url' => '/usuarios',
             'icon' => 'fas fa-fw fa-user',
+            'can' => 'gestionar usuarios',
         ],
          [
             'text' => 'Enfermedades',
             'url' => '/enfermedad',
             'icon' => 'fas fa-virus',
+            'can' => 'gestionar enfermedades',
+        
+        ],
+         [
+            'text' => 'Consultas',
+            'url' => '/consulta',
+            'icon' => 'fas fa-virus',
+            'can' => 'ver consultas',
         
         ],
       

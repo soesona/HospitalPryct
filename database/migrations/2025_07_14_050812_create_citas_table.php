@@ -12,22 +12,24 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('citas', function (Blueprint $table) {
-        $table->id('codigoCita');
-        $table->string('codigoPaciente', 13);
-        $table->string('codigoDoctor', 13);
-        $table->date('fechaCita');
-        $table->time('horaInicio');
-        $table->time('horaFin');
-        $table->enum('estado', ['pendiente', 'confirmada', 'cancelada', 'finalizada'])->default('pendiente');
-        $table->timestamps();
+    $table->id('codigoCita');
+    $table->unsignedBigInteger('codigoPaciente'); 
+    $table->unsignedBigInteger('codigoDoctor');   
+    $table->date('fechaCita');
+    $table->time('horaInicio');
+    $table->time('horaFin');
+    $table->enum('estado', ['pendiente', 'confirmada', 'cancelada', 'finalizada'])->default('pendiente');
+    $table->timestamps();
 
-        $table->foreign('codigoPaciente')->references('codigoPaciente')->on('pacientes')->onDelete('cascade');
-        $table->foreign('codigoDoctor')->references('codigoDoctor')->on('doctores')->onDelete('cascade');
-        $table->unique(['codigoDoctor', 'fechaCita', 'horaInicio']);
-        $table->unique(['codigoPaciente', 'fechaCita']);
+    $table->foreign('codigoPaciente')->references('codigoPaciente')->on('pacientes')->onDelete('cascade');
+    $table->foreign('codigoDoctor')->references('codigoDoctor')->on('doctores')->onDelete('cascade');
 
- 
-        });
+
+    $table->unique(['codigoDoctor', 'fechaCita', 'horaInicio'], 'unique_doctor_time');
+    $table->unique(['codigoPaciente', 'fechaCita'], 'unique_patient_date');
+
+    $table->index(['fechaCita', 'estado']);
+});
     }
 
     /**

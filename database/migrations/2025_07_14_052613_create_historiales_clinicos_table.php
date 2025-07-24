@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('historiales_clinicos', function (Blueprint $table) {
         $table->id('codigoHistorial');
-        $table->string('codigoPaciente', 13);
+        $table->unsignedBigInteger('codigoPaciente');
         $table->unsignedBigInteger('codigoConsulta');
         $table->date('fechaRegistro'); 
         $table->text('descripcion');   
