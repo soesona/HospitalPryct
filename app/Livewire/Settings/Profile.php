@@ -37,7 +37,8 @@ class Profile extends Component
 
         $user->fill($validated);
 
-        if ($user->isDirty('email')) {
+        // Solo reinicia la verificación si el email cambió realmente
+        if ($user->email !== $this->email) {
             $user->email_verified_at = null;
         }
 
