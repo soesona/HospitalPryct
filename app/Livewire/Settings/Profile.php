@@ -10,29 +10,21 @@ use Livewire\Component;
 
 class Profile extends Component
 {
-    public string $name = '';
-
+    public string $nombreCompleto = '';
     public string $email = '';
 
-    /**
-     * Mount the component.
-     */
     public function mount(): void
     {
-        $this->name = Auth::user()->name;
+        $this->nombreCompleto = Auth::user()->nombreCompleto;
         $this->email = Auth::user()->email;
     }
 
-    /**
-     * Update the profile information for the currently authenticated user.
-     */
     public function updateProfileInformation(): void
     {
         $user = Auth::user();
 
         $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
-
+            'nombreCompleto' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
                 'string',
@@ -51,19 +43,15 @@ class Profile extends Component
 
         $user->save();
 
-        $this->dispatch('profile-updated', name: $user->name);
+        $this->dispatch('profile-updated', nombreCompleto: $user->nombreCompleto);
     }
 
-    /**
-     * Send an email verification notification to the current user.
-     */
     public function resendVerificationNotification(): void
     {
         $user = Auth::user();
 
         if ($user->hasVerifiedEmail()) {
             $this->redirectIntended(default: route('dashboard', absolute: false));
-
             return;
         }
 
