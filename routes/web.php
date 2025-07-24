@@ -20,10 +20,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
     
-    Route::resource('/usuarios','App\Http\Controllers\UserController');
+   
     
 });
-
+ Route::resource('/usuarios','App\Http\Controllers\UserController');
+ Route::resource('/enfermedad','App\Http\Controllers\EnfermedadController');
 Route::resource('/admin/medicamentos','App\Http\Controllers\MedicamentoController');
 
 require __DIR__.'/auth.php';

@@ -12,17 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('doctores', function (Blueprint $table) {
-        $table->string('codigoDoctor', 13)->primary();
-        $table->string('nombre', 50);
-        $table->string('apellido', 50);
-        $table->unsignedBigInteger('user_id')->unique();
+        $table->id('codigoDoctor');
+        $table->unsignedBigInteger('codigoUsuario')->unique();
         $table->unsignedBigInteger('codigoEspecialidad');
         $table->time('horarioInicio');
         $table->time('horarioFin');
-        $table->string('telefono', 8);
         $table->timestamps();
         
-        $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        $table->foreign('codigoUsuario')->references('id')->on('users')->onDelete('cascade');
         $table->foreign('codigoEspecialidad')->references('codigoEspecialidad')->on('especialidades');
           
         });
