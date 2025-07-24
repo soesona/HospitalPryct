@@ -19,33 +19,35 @@ class Profile extends Component
         $this->email = Auth::user()->email;
     }
 
-    public function updateProfileInformation(): void
-    {
-        $user = Auth::user();
+   public function updateProfileInformation(): void
+{
+    $user = Auth::user();
 
-        $validated = $this->validate([
-            'nombreCompleto' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'lowercase',
-                'email',
-                'max:255',
-                Rule::unique(User::class)->ignore($user->id),
-            ],
-        ]);
+    $validated = $this->validate([
+        'nombreCompleto' => ['required', 'string', 'max:255'],
+        'email' => [
+            'required',
+            'string',
+            'lowercase',
+            'email',
+            'max:255',
+            Rule::unique(User::class)->ignore($user->id),
+        ],
+    ]);
 
-        $user->fill($validated);
+   
+    $oldEmail = $user->email;
 
-        // Solo reinicia la verificación si el email cambió realmente
-        if ($user->email !== $this->email) {
-            $user->email_verified_at = null;
-        }
+    $user->fill($validated);
 
-        $user->save();
-
-        $this->dispatch('profile-updated', nombreCompleto: $user->nombreCompleto);
+    if ($oldEmail !== $validated['email']) {
+        $user->email_verified_at = null;
     }
+
+    $user->save();
+
+    $this->dispatch('profile-updated', nombreCompleto: $user->nombreCompleto);
+}
 
     public function resendVerificationNotification(): void
     {
