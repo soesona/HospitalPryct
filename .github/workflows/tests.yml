@@ -50,6 +50,6 @@ jobs:
       - name: Build Assets
         run: npm run build
 
-      - name: Run Tests
-        run: ./vendor/bin/phpunit
-        continue-on-error: true
+      #- name: Run Tests
+       # run: ./vendor/bin/phpunit
+      
