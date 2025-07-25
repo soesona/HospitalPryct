@@ -315,6 +315,14 @@ return [
             'type' => 'sidebar-menu-search',
             'text' => 'search',
         ],
+
+        [
+        'text' => 'Inicio',
+        'url'  => '/dashboard',
+        'icon' => 'fas fa-home',
+        
+        ],
+
         [
             'text' => 'blog',
             'url' => 'admin/blog',
