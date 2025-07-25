@@ -12,11 +12,10 @@
     {{ Auth::user()->nombreCompleto }}
 </h1>
 
-
+//dashboard del admin
     @if(Auth::user()->can('gestionar usuarios'))
-        <h2>"dashboard del admin"</h2>
-        
-        {{-- Luego probar el componente --}}
+    <p class="text-muted">Este es su panel como Administrador.</p>
+
         <div class="row">
     @isset($totalPacientes)
         <div class="col-md-6">
@@ -31,9 +30,83 @@
     @endisset
 </div>
 
-
+//dashboard del doctor
     @elseif(Auth::user()->can('ver pacientes asignados'))
-        <h2>"dashboard del doctor"</h2>
+        <p class="text-muted">Este es su panel de control clínico.</p>
+        <div class="row">
+    {{-- Citas para hoy --}}
+    <div class="col-md-3">
+        <div class="info-box bg-info">
+            <span class="info-box-icon bg-info"><i class="fas fa-calendar-day"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Citas para hoy</span>
+                <span class="info-box-number">3</span>
+            </div>
+        </div>
+    </div>
+
+    {{-- Pacientes asignados --}}
+    <div class="col-md-3">
+        <div class="info-box bg-success">
+            <span class="info-box-icon bg-success"><i class="fas fa-user-injured"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Pacientes asignados</span>
+                <span class="info-box-number">5</span>
+            </div>
+        </div>
+    </div>
+
+    {{-- Consultas finalizadas --}}
+    <div class="col-md-3">
+        <div class="info-box bg-warning">
+            <span class="info-box-icon bg-warning"><i class="fas fa-stethoscope"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Consultas finalizadas</span>
+                <span class="info-box-number">2</span>
+            </div>
+        </div>
+    </div>
+
+    {{-- Consultas pendientes --}}
+<div class="col-md-3">
+    <div class="info-box bg-danger">
+        <span class="info-box-icon bg-danger"><i class="fas fa-clock"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Citas pendientes</span>
+            <span class="info-box-number">4</span>
+        </div>
+    </div>
+</div>
+
+</div>
+
+    @if(true) 
+    <div class="info-box bg-teal">
+        <span class="info-box-icon"><i class="fas fa-clock"></i></span>
+
+        <div class="info-box-content">
+            <span class="info-box-text">Próxima Cita de Hoy</span>
+            <span class="info-box-number">09:00 AM</span>
+            <span class="progress-description">
+                Paciente: Juan Pérez | Estado: Confirmada
+            </span>
+        </div>
+    </div>
+@else
+    <div class="info-box bg-secondary">
+        <span class="info-box-icon"><i class="fas fa-calendar-times"></i></span>
+
+        <div class="info-box-content">
+            <span class="info-box-text">Sin próximas citas</span>
+            <span class="info-box-number">—</span>
+            <span class="progress-description">
+                No hay citas agendadas para hoy
+            </span>
+        </div>
+    </div>  
+@endif
+
+//dashboard del paciente
     @elseif(Auth::user()->can('ver historial clinico propio'))
         <h2>"dashboard del paciente"</h2>
     @else
