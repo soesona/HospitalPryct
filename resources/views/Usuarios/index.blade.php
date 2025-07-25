@@ -38,11 +38,18 @@
                     <td>{{ $usuario->getRoleNames()->implode(', ') }}</td>
                     <td>{{ $usuario->created_at->format('d/m/Y') }}</td>
                     <td>
-                        <a href="" class="btn btn-sm btn-warning">Editar</a>
-                         <form action="{{ route('usuarios.cambiarEstado', $usuario->codigoUsuario) }}" method="POST" style="display:inline;">
-                         @csrf
-                          @method('PATCH')
-    <button type="submit" class="btn btn-sm {{ $usuario->is_active ? 'btn-danger' : 'btn-success' }}" onclick="return confirm('¿Seguro quieres cambiar el estado?')">
+                        <a href="" class="btn btn-sm btn-warning" ><i class="fas fa-edit"></i> Editar
+                         </a>
+                        <button data-modal-target="modal-asignar-" data-modal-toggle="modal-asignar-" class="btn btn-sm btn-info">
+    <i class="fas fa-user-cog"></i> Asignar roles
+</button>
+                         <form id="estado-form-{{ $usuario->codigoUsuario }}" action="{{ route('usuarios.cambiarEstado', $usuario->codigoUsuario) }}" method="POST" style="display:inline;">
+    @csrf
+    @method('PATCH')
+    <button type="button" 
+            class="btn btn-sm {{ $usuario->is_active ? 'btn-danger' : 'btn-success' }}" 
+            onclick="confirmarCambioEstado({{ $usuario->codigoUsuario }}, '{{ $usuario->is_active ? 'desactivar' : 'activar' }}')">
+        <i class="fas {{ $usuario->is_active ? 'fa-user-slash' : 'fa-user-check' }}"></i>
         {{ $usuario->is_active ? 'Desactivar' : 'Activar' }}
     </button>
 </form>
