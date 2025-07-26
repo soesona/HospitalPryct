@@ -36,7 +36,7 @@
                             <td>{{ $medicamento->stock }}</td>
                             <td>{{ $medicamento->fechaVencimiento }}</td>
                             <td>
-                                <button class="btn btn-success btn-sm ejecutar"
+                                <button class="btn btn-warning btn-sm ejecutar"
                                     data-toggle="modal" data-target="#mEditarMedicamento"
                                     data-codigomed="{{ $medicamento->codigoMedicamento }}"
                                     data-nombre="{{ $medicamento->nombre }}"
@@ -54,7 +54,7 @@
                                     class="btn btn-sm {{ $medicamento->activo ? 'btn-danger' : 'btn-success' }}" 
                                     onclick="confirmarCambioEstado({{ $medicamento->codigoMedicamento }}, '{{ $medicamento->activo ? 'desactivar' : 'activar' }}')">
                                     <i class="fas {{ $medicamento->activo ? 'fa-user-slash' : 'fa-user-check' }}"></i>
-                                    {{ $medicamento->activo ? 'Desactivar' : 'Activar' }}
+                                    {{ $medicamento->activo ? 'Descontinuar' : 'Reactivar' }}
                                 </button>
                                 </form>
                             </td>
