@@ -17,6 +17,7 @@ return new class extends Migration
         $table->text('descripcion');
         $table->integer('stock')->default(0);
         $table->date('fechaVencimiento');
+        $table->boolean('activo')->default(true);
         $table->timestamps();
         });
     }

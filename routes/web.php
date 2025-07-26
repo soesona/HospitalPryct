@@ -29,10 +29,12 @@ Route::middleware(['auth'])->group(function () {
    
     
 });
- Route::resource('/usuarios','App\Http\Controllers\UserController');
- Route::resource('/enfermedad','App\Http\Controllers\EnfermedadController');
-  Route::resource('/consulta','App\Http\Controllers\ConsultasController');
-Route::resource('/admin/medicamentos','App\Http\Controllers\MedicamentoController');
-Route::patch('/usuarios/{id}/cambiar-estado', [App\Http\Controllers\UserController::class, 'cambiarEstado'])->name('usuarios.cambiarEstado');
+    Route::resource('/usuarios','App\Http\Controllers\UserController');
+    Route::resource('/enfermedad','App\Http\Controllers\EnfermedadController');
+    Route::resource('/consulta','App\Http\Controllers\ConsultasController');
+    Route::resource('/admin/medicamentos','App\Http\Controllers\MedicamentoController')->parameters(['medicamentos' => 'codigoMedicamento']);
+    Route::put('/admin/medicamentos','App\Http\Controllers\MedicamentoController@update');
+    Route::patch('/usuarios/{id}/cambiar-estado', [App\Http\Controllers\UserController::class, 'cambiarEstado'])->name('usuarios.cambiarEstado');
+    Route::patch('/medicamentos/{codigoMedicamento}/cambiar-estado', [App\Http\Controllers\MedicamentoController::class, 'cambiarEstado'])->name('medicamento.cambiarEstado');
 
 require __DIR__.'/auth.php';

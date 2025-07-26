@@ -32,28 +32,35 @@ class MedicamentoController extends Controller
         return redirect('/admin/medicamentos');
     }
 
-    public function update(Request $request, medicamento $medicamento)
+    public function update(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:100',
-            'descripcion' => 'required|string',
-            'stock' => 'required|integer|min:0',
-            'fechaVencimiento' => 'required|date',
-        ]);
+    $request->validate([
+        'codigoMedicamentou' => 'required|exists:medicamentos,codigoMedicamento',
+        'nombreu' => 'required|string|max:100',
+        'descripcionu' => 'required|string',
+        'stocku' => 'required|integer|min:0',
+        'fechaVencimientou' => 'required|date',
+    ]);
 
-        $medicamento->nombre = $request->nombre;
-        $medicamento->descripcion = $request->descripcion;
-        $medicamento->stock = $request->stock;
-        $medicamento->fechaVencimiento = $request->fechaVencimiento;
-        $medicamento->save();
+    $medicamento = medicamento::find($request->get('codigoMedicamentou'));
 
-        return redirect('/admin/medicamentos');
+    $medicamento->nombre = $request->get('nombreu');
+    $medicamento->descripcion = $request->get('descripcionu');
+    $medicamento->stock = $request->get('stocku');
+    $medicamento->fechaVencimiento = $request->get('fechaVencimientou');
+    $medicamento->save();
+
+    return redirect('/admin/medicamentos');
     }
 
-    public function destroy(medicamento $medicamento)
+    public function cambiarEstado($codigoMedicamento)
     {
-        $datosMedicamentos = medicamento::find($codigoMedicamento);
-        $medicamento->delete();
-        return redirect('/admin/medicamentos');
+    $datosMedicamentos = medicamento::findOrFail($codigoMedicamento);
+    $datosMedicamentos->activo = !$datosMedicamentos->activo;
+    $datosMedicamentos->save();
+
+    return redirect('/admin/medicamentos')->with('success', 'Estado del medicamento actualizado correctamente.');
     }
+
+    
 }

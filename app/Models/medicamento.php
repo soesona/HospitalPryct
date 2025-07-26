@@ -9,4 +9,10 @@ class medicamento extends Model
 {
     /** @use HasFactory<\Database\Factories\MedicamentoFactory> */
     use HasFactory;
+
+    protected $table = 'medicamentos';
+    protected $primaryKey = 'codigoMedicamento';
+    public $incrementing = true;
+    protected $keyType = 'int';
+    
 }
