@@ -12,7 +12,7 @@
     {{ Auth::user()->nombreCompleto }}
 </h1>
 
-//dashboard del admin
+{{-- dashboard del admin --}}
     @if(Auth::user()->can('gestionar usuarios'))
     <p class="text-muted">Este es su panel como Administrador.</p>
 
@@ -30,7 +30,7 @@
     @endisset
 </div>
 
-//dashboard del doctor
+{{-- dashboard del doctor --}}
     @elseif(Auth::user()->can('ver pacientes asignados'))
         <p class="text-muted">Este es su panel de control clínico.</p>
         <div class="row">
@@ -106,9 +106,43 @@
     </div>  
 @endif
 
-//dashboard del paciente
+    {{-- dashboard del paciente --}}
     @elseif(Auth::user()->can('ver historial clinico propio'))
-        <h2>"dashboard del paciente"</h2>
+        <p class="text-muted">Este es su panel de como Paciente</p>
+        <div class="row">
+  <div class="col-md-6">
+    <div class="info-box bg-info">
+      <span class="info-box-icon bg-info"><i class="fas fa-pills"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">Medicamento recetado en la última consulta</span>
+        <span class="info-box-number">{{ $medicamentoRecetado }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="info-box bg-success">
+      <span class="info-box-icon bg-success"><i class="far fa-calendar-alt"></i></span>
+      <div class="info-box-content">
+        <span class="info-box-text">Próxima cita agendada</span>
+        <span class="info-box-number">{{ $proximaCita }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="info-box bg-primary">
+  <span class="info-box-icon"><i class="far fa-calendar-check"></i></span>
+  <div class="info-box-content">
+    <span class="info-box-text">Última consulta</span>
+    <span class="info-box-number" style="font-size: 14px; line-height: 1.3;">
+      {{ $fechaUltimaConsulta }}<br>
+      Especialidad: {{ $especialidad }}<br>
+      Doctor: {{ $doctor }}
+    </span>
+  </div>
+</div>
+
     @else
         <p>No tienes permisos para ver un dashboard.</p>
     @endif

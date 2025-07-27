@@ -40,8 +40,13 @@ class Register extends Component
     // Creamos el usuario con todos los campos validados
     $user = User::create($validated);
 
-    // Asignamos el rol (si estás usando Spatie)
-    $user->assignRole('Paciente');
+    // Asignamos el rol 
+$user->assignRole('Paciente');
+
+    // Crear registro en pacientes vinculando el usuario
+    \App\Models\Paciente::create([
+        'codigoUsuario' => $user->codigoUsuario,
+    ]);
 
     // Disparamos evento y autenticamos
     event(new Registered($user));
