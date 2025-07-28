@@ -362,7 +362,13 @@ return [
             'can' => 'ver consultas',
         
         ],
-      
+         [
+            'text' => 'Especialidades',
+            'url'  => '/especialidades',
+            'icon' => 'fas fa-plus',
+            'can'  => 'gestionar especialidades',
+        ],
+
     ],
 
     /*

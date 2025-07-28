@@ -6,6 +6,7 @@ use App\Livewire\Settings\Profile;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EspecialidadController;
 
 
 
@@ -36,5 +37,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/admin/medicamentos','App\Http\Controllers\MedicamentoController@update');
     Route::patch('/usuarios/{id}/cambiar-estado', [App\Http\Controllers\UserController::class, 'cambiarEstado'])->name('usuarios.cambiarEstado');
     Route::patch('/medicamentos/{codigoMedicamento}/cambiar-estado', [App\Http\Controllers\MedicamentoController::class, 'cambiarEstado'])->name('medicamento.cambiarEstado');
+   Route::resource('especialidades', App\Http\Controllers\EspecialidadController::class)->only(['index', 'create', 'store', 'edit', 'update']);
+
 
 require __DIR__.'/auth.php';
