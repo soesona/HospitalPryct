@@ -44,4 +44,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('/pacientes','App\Http\Controllers\pacienteController');
 
+    Route::resource('/pacientes','App\Http\Controllers\pacienteController');
+
 require __DIR__.'/auth.php';
