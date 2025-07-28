@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use App\Models\Medicamento;
 
 
 class DashboardController extends Controller
@@ -22,6 +23,18 @@ class DashboardController extends Controller
     if (Auth::user()->can('gestionar usuarios')) {
         $data['totalPacientes'] = User::role('paciente')->count();
         $data['totalDoctores'] = User::role('doctor')->count();
+        $data['totalMedicamentos'] = \App\Models\Medicamento::where('activo', true)->count();
+
+        // Contar doctores activos
+        $data['doctoresDisponibles'] = User::role('doctor')
+        ->where('is_active', true)
+        ->count();
+
+        // Medicamentos con stock bajo (menos de 10 unidades)
+        $data['medicamentosBajoStock'] = Medicamento::where('stock', '<', 10)
+            ->where('activo', true)
+            ->get();
+
     }
 
     // Para paciente, si tiene permiso para ver su historial clínico

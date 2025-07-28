@@ -28,7 +28,34 @@
             <x-adminlte-small-box title="Doctores" text="{{ $totalDoctores }}" icon="fas fa-user-md" theme="success"/>
         </div>
     @endisset
+
+    @isset($totalMedicamentos)
+    <div class="col-md-6">
+        <x-adminlte-small-box title="Medicamentos activos" text="{{ $totalMedicamentos }}" icon="fas fa-pills" theme="teal"/>
+    </div>
+@endisset
+
+@isset($doctoresDisponibles)
+    <div class="col-md-6">
+        <x-adminlte-small-box 
+            title="Doctores Activos" 
+            text="{{ $doctoresDisponibles > 0 ? $doctoresDisponibles : 'No hay doctores activos' }}" 
+            icon="fas fa-user-check" 
+            theme="primary"
+        />
+    </div>
+@endisset
 </div>
+
+@if(isset($medicamentosBajoStock) && $medicamentosBajoStock->count() > 0)
+    <x-adminlte-card title="Medicamentos con stock bajo" theme="danger" icon="fas fa-exclamation-triangle">
+        <ul>
+            @foreach($medicamentosBajoStock as $med)
+                <li>{{ $med->nombre }} - Stock: {{ $med->stock }}</li>
+            @endforeach
+        </ul>
+    </x-adminlte-card>
+@endif
 
 {{-- dashboard del doctor --}}
     @elseif(Auth::user()->can('ver pacientes asignados'))
@@ -108,7 +135,7 @@
 
     {{-- dashboard del paciente --}}
     @elseif(Auth::user()->can('ver historial clinico propio'))
-        <p class="text-muted">Este es su panel de como Paciente</p>
+        <p class="text-muted">Este es su panel como Paciente</p>
         <div class="row">
   <div class="col-md-6">
     <div class="info-box bg-info">
