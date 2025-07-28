@@ -15,7 +15,7 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-        <a href="{{ route('usuarios.create') }}" class="btn btn-primary">
+         <button class="btn btn-primary" data-toggle="modal" data-target="#modalCrearUsuario">
             <i class="fas fa-user-plus"></i> Crear Usuario
         </a>
     </div>
@@ -35,7 +35,7 @@
                 @foreach ($usuarios as $usuario)
                 <tr>
                     <td>{{ $usuario->codigoUsuario }}</td>
-                    <td>{{ $usuario->nombreCompleto }}</td>
+                    <td>{{ ucwords(strtolower($usuario->nombreCompleto)) }}</td>
                     <td>{{ $usuario->email }}</td>
                     <td>{{ $usuario->getRoleNames()->implode(', ') }}</td>
                     <td>{{ $usuario->created_at->format('d/m/Y') }}</td>
@@ -80,7 +80,7 @@
             @csrf
             @method('PUT')
             <div class="modal-header bg-info text-white">
-                <h5 class="modal-title m-0">Asignar roles a {{ $usuario->nombreCompleto }}</h5>
+                <h5 class="modal-title m-0">Asignar roles a {{ ucwords(strtolower($usuario->nombreCompleto)) }}</h5>
                 </button>
             </div>
             <div class="modal-body">
@@ -114,11 +114,80 @@
 @endforeach
 
 
+<div class="modal fade" id="modalCrearUsuario" tabindex="-1" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <form action="{{ route('usuarios.store') }}" method="POST" class="modal-content">
+            @csrf
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title m-0">Crear Usuario</h5>
+            </div>
+            <div class="modal-body">
+          
+                <div class="form-group">
+                    <label>Nombre completo</label>
+                    <input type="text" name="nombreCompleto" class="form-control" value="{{ old('nombreCompleto') }}" required>
+                    @error('nombreCompleto')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
 
+           
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
+                    @error('email')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+
+                
+                <div class="form-group">
+                    <label>Identidad</label>
+                    <input type="text" name="identidad" class="form-control" value="{{ old('identidad') }}" required>
+                    @error('identidad')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+
+               
+                <div class="form-group">
+                    <label>Fecha de nacimiento</label>
+                    <input type="date" name="fechaNacimiento" class="form-control" value="{{ old('fechaNacimiento') }}" required>
+                    @error('fechaNacimiento')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+
+               
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="text" name="telefono" class="form-control" value="{{ old('telefono') }}" required>
+                    @error('telefono')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+
+               
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" name="password" class="form-control" required>
+                    @error('password')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="submit">Crear</button>
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <div class="modal fade" id="modalEditarUsuario" tabindex="-1" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
-        <form action="{{ route('usuarios.actualizar') }}" method="POST" class="modal-content">
+      <form id="formEditarUsuario" method="POST" class="modal-content">
             @csrf
             @method('PUT')
             <div class="modal-header bg-success text-white">
@@ -205,7 +274,11 @@
 
 
   $(document).on('click', '.EditarUsuario', function () {
-    $('#codigoUsuario').val($(this).data('codigousu'));
+    const codigoUsuario = $(this).data('codigousu');
+
+    $('#formEditarUsuario').attr('action', `/usuarios/${codigoUsuario}`);
+
+    $('#codigoUsuario').val(codigoUsuario);
     $('#nombreCompleto').val($(this).data('nombre'));
     $('#email').val($(this).data('email'));
     $('#identidad').val($(this).data('identidad'));
@@ -213,9 +286,14 @@
     $('#telefono').val($(this).data('telefono'));
 });
 
+
          
 @if ($errors->any())
-    $('#modalEditarUsuario').modal('show');
+    @if (old('codigoUsuario'))
+        $('#modalEditarUsuario').modal('show');
+    @else
+        $('#modalCrearUsuario').modal('show');
+    @endif
 @endif
 
 $('#modalEditarUsuario').on('hidden.bs.modal', function () {
@@ -232,10 +310,6 @@ $('.modal').on('show.bs.modal', function () {
     $(this).find('.form-control').removeClass('is-invalid');
 });
 </script>
-
-
-
-
 
 
  @vite('resources/js/app.js') 

@@ -40,7 +40,7 @@ class Register extends Component
   
     $user = User::create($validated);
 
- 
+    // Asignamos el rol 
 $user->assignRole('Paciente');
 
     // Crear registro en pacientes vinculando el usuario

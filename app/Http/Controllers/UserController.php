@@ -34,7 +34,28 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+         $validated = $request->validate(
+        $this->reglasValidacion(), 
+        $this->mensajesValidacion()
+    );
+
+    $usuario = new User();
+    $usuario->nombreCompleto = mb_strtoupper($validated['nombreCompleto'], 'UTF-8');
+    $usuario->email = strtolower($validated['email']);
+    $usuario->identidad = strtoupper($validated['identidad']);
+    $usuario->fechaNacimiento = $validated['fechaNacimiento'];
+    $usuario->telefono = strtoupper($validated['telefono']);
+    $usuario->password = bcrypt($validated['password']);
+    $usuario->save();
+
+     $usuario->assignRole('Paciente');
+
+    
+    \App\Models\Paciente::create([
+        'codigoUsuario' => $usuario->codigoUsuario,
+    ]);
+
+    return redirect('/usuarios');
     }
 
     /**
@@ -59,30 +80,17 @@ class UserController extends Controller
     public function update(Request $request, string $id)
     {
 
-         $messages = [
-        'nombreCompleto.regex' => 'El nombre solo debe contener letras y espacios.',
-        'email.not_regex' => 'El email no puede contener espacios.',
-        'identidad.digits' => 'La identidad debe tener exactamente 13 números.',
-        'telefono.digits' => 'El teléfono debe tener exactamente 8 números.',
-        'identidad.unique' => 'Esta identidad ya está en uso.',
-        'email.unique' => 'Este email ya está registrado.',
-    ];
-        $validated = $request->validate([
-        'codigoUsuario' => 'required|exists:users,codigoUsuario',
-        'nombreCompleto' => ['required', 'string', 'max:60', 'regex:/^[\pL\s]+$/u'],
-        'email' => ['required', 'email', 'max:255', 'not_regex:/\s/', Rule::unique('users', 'email')->ignore($request->codigoUsuario, 'codigoUsuario')],
-        'identidad' => ['required','digits:13',Rule::unique('users', 'identidad')->ignore($request->codigoUsuario, 'codigoUsuario')],
-        'fechaNacimiento' => ['required', 'date'],
-        'telefono' => ['required', 'digits:8'],
-    ], $messages); 
+         $validated = $request->validate(
+        $this->reglasValidacion($id),
+        $this->mensajesValidacion()
+    );
 
     $validated['nombreCompleto'] = mb_strtoupper($validated['nombreCompleto'], 'UTF-8');
     $validated['identidad'] = strtoupper($validated['identidad']);
     $validated['telefono'] = strtoupper($validated['telefono']);
-    $validated['email'] = strtolower($validated['email']); 
+    $validated['email'] = strtolower($validated['email']);
 
-
-    $usuario= User::where('codigoUsuario', $validated['codigoUsuario'])->update($validated);
+    User::where('codigoUsuario', $id)->update($validated);
 
 
     return redirect()->back()->withInput(); 
@@ -120,5 +128,37 @@ class UserController extends Controller
         
         return redirect('/usuarios');
     }   
+
+   private function reglasValidacion($codigoUsuario = null)
+{
+    return [
+   
+        'password' => ['nullable', 'string', 'min:6'],
+        'nombreCompleto' => ['required', 'string', 'max:60', 'regex:/^[\pL\s]+$/u'],
+        'email' => [
+            'required', 'email', 'max:255', 'not_regex:/\s/',
+            Rule::unique('users', 'email')->ignore($codigoUsuario, 'codigoUsuario')
+        ],
+        'identidad' => [
+            'required', 'digits:13',
+            Rule::unique('users', 'identidad')->ignore($codigoUsuario, 'codigoUsuario')
+        ],
+        'fechaNacimiento' => ['required', 'date'],
+        'telefono' => ['required', 'digits:8'],
+    ];
+}
+
+private function mensajesValidacion()
+{
+    return [
+        'nombreCompleto.regex' => 'El nombre solo debe contener letras y espacios.',
+        'email.not_regex' => 'El email no puede contener espacios.',
+        'identidad.digits' => 'La identidad debe tener exactamente 13 números.',
+        'telefono.digits' => 'El teléfono debe tener exactamente 8 números.',
+        'identidad.unique' => 'Esta identidad ya está en uso.',
+        'email.unique' => 'Este email ya está registrado.',
+        'password.min' => 'La contraseña debe tener al menos 6 caracteres.',
+    ];
+}
 
 }
