@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Medicamentos')
+@section('title', 'Pacientes')
 
 @section('content_header')
     <h1 class="mb-3">Listado de Pacientes</h1>

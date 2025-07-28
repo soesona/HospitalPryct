@@ -23,8 +23,8 @@ class MedicamentoController extends Controller
         ]);
 
         $nuevo = new medicamento();
-        $nuevo->nombre = $request->nombre;
-        $nuevo->descripcion = $request->descripcion;
+        $nuevo->nombre = strtoupper($request->nombre);
+        $nuevo->descripcion = strtoupper($request->descripcion);
         $nuevo->stock = $request->stock;
         $nuevo->fechaVencimiento = $request->fechaVencimiento;
         $nuevo->save();
@@ -44,8 +44,8 @@ class MedicamentoController extends Controller
 
     $medicamento = medicamento::find($request->get('codigoMedicamentou'));
 
-    $medicamento->nombre = $request->get('nombreu');
-    $medicamento->descripcion = $request->get('descripcionu');
+    $medicamento->nombre = strtoupper($request->get('nombreu'));
+    $medicamento->descripcion = strtoupper($request->get('descripcionu'));
     $medicamento->stock = $request->get('stocku');
     $medicamento->fechaVencimiento = $request->get('fechaVencimientou');
     $medicamento->save();

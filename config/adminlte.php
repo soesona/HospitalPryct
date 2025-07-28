@@ -366,19 +366,20 @@ return [
         [
             'text' => 'Pacientes',
             'url' => '/pacientes',
-            'icon' => 'fas fa-virus',
+            'icon' => 'fas fa-users',
             'can' => 'gestionar pacientes',
         
         ],
-      
-    ],
+
          [
             'text' => 'Especialidades',
             'url'  => '/especialidades',
             'icon' => 'fas fa-plus',
             'can'  => 'gestionar especialidades',
         ],
-
+      
+    ],
+        
 
     /*
     |--------------------------------------------------------------------------

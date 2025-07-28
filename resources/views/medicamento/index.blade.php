@@ -31,16 +31,16 @@
                     @foreach ($listaMedicamentos as $medicamento)
                         <tr>
                             <td>{{ $medicamento->codigoMedicamento }}</td>
-                            <td>{{ $medicamento->nombre }}</td>
-                            <td>{{ $medicamento->descripcion }}</td>
+                            <td>{{ ucfirst(strtolower($medicamento->nombre)) }}</td>
+                            <td>{{ ucfirst(strtolower($medicamento->descripcion)) }}</td>
                             <td>{{ $medicamento->stock }}</td>
                             <td>{{ $medicamento->fechaVencimiento }}</td>
                             <td>
                                 <button class="btn btn-warning btn-sm ejecutar"
                                     data-toggle="modal" data-target="#mEditarMedicamento"
                                     data-codigomed="{{ $medicamento->codigoMedicamento }}"
-                                    data-nombre="{{ $medicamento->nombre }}"
-                                    data-descripcion="{{ $medicamento->descripcion }}"
+                                    data-nombre="{{ ucfirst(strtolower($medicamento->nombre)) }}"
+                                    data-descripcion="{{ucfirst(strtolower($medicamento->descripcion)) }}"
                                     data-stock="{{ $medicamento->stock }}"
                                     data-fechav="{{ $medicamento->fechaVencimiento }}">
                                     <i class="fas fa-edit"></i> Editar
