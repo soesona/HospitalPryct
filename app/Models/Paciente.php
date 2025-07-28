@@ -11,8 +11,8 @@ class Paciente extends Model
 
     protected $fillable = ['codigoUsuario', /* otros campos */];
 
-    public function user()
+    public function usuario()
     {
-        return $this->belongsTo(User::class, 'codigoUsuario', 'id');
+        return $this->belongsTo(User::class, 'codigoUsuario', 'codigoUsuario');
     }
 }

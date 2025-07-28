@@ -40,4 +40,6 @@ Route::middleware(['auth'])->group(function () {
    Route::resource('especialidades', App\Http\Controllers\EspecialidadController::class)->only(['index', 'create', 'store', 'edit', 'update']);
 
 
+    Route::resource('/pacientes','App\Http\Controllers\pacienteController');
+
 require __DIR__.'/auth.php';
