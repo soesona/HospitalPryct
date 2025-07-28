@@ -362,6 +362,16 @@ return [
             'can' => 'ver consultas',
         
         ],
+
+        [
+            'text' => 'Pacientes',
+            'url' => '/pacientes',
+            'icon' => 'fas fa-virus',
+            'can' => 'gestionar pacientes',
+        
+        ],
+      
+    ],
          [
             'text' => 'Especialidades',
             'url'  => '/especialidades',
