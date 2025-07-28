@@ -46,4 +46,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('/pacientes','App\Http\Controllers\pacienteController');
 
+    Route::put('/usuarios/asignar-rol/{usuario}', [UserController::class, 'asignarRol'])->name('usuarios.asignarRol');
+    Route::put('/usuarios/actualizar', [UserController::class, 'actualizar'])->name('usuarios.actualizar');
+
 require __DIR__.'/auth.php';

@@ -34,13 +34,13 @@ class Register extends Component
         'telefono' => ['required', 'string', 'size:8'],
     ]);
 
-    // Hasheamos la contraseña
+  
     $validated['password'] = Hash::make($validated['password']);
 
-    // Creamos el usuario con todos los campos validados
+  
     $user = User::create($validated);
 
-    // Asignamos el rol 
+ 
 $user->assignRole('Paciente');
 
     // Crear registro en pacientes vinculando el usuario
@@ -48,11 +48,11 @@ $user->assignRole('Paciente');
         'codigoUsuario' => $user->codigoUsuario,
     ]);
 
-    // Disparamos evento y autenticamos
+   
     event(new Registered($user));
     Auth::login($user);
 
-    // Redirigimos
+
     $this->redirect(route('dashboard', absolute: false), navigate: true);
 }
 

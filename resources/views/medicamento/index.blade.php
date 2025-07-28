@@ -65,7 +65,6 @@
         </div>
     </div>
 
-    <!-- Modal Crear -->
     <div class="modal fade" id="modalCrear" tabindex="-1">
         <div class="modal-dialog">
             <form action="/admin/medicamentos" method="POST" class="modal-content">
@@ -100,7 +99,7 @@
         </div>
     </div>
 
-    <!-- Modal Editar -->
+   
     <div class="modal fade" id="mEditarMedicamento" tabindex="-1">
         <div class="modal-dialog">
             <form action="/admin/medicamentos" method="POST" class="modal-content" id="miFormU">

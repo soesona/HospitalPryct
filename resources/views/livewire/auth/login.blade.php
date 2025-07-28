@@ -28,15 +28,15 @@
                 viewable
             />
 
-            @if (Route::has('password.request'))
-                <flux:link class="absolute end-0 top-0 text-sm" :href="route('password.request')" wire:navigate>
-                    {{ __('¿Olvidaste tu contraseña?') }}
-                </flux:link>
-            @endif
-        </div>
+          {{-- 
+       @if (Route::has('password.request'))
+    <flux:link class="absolute end-0 top-0 text-sm" :href="route('password.request')" wire:navigate>
+        {{ __('¿Olvidaste tu contraseña?') }}
+    </flux:link>
+@endif
+--}}
 
-
-        <div class="flex items-center justify-end">
+        <div class="flex items-center justify-end mt-4">
             <flux:button variant="primary" type="submit" class="w-full">{{ __('Iniciar sesión') }}</flux:button>
         </div>
     </form>
