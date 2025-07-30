@@ -1,0 +1,112 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use App\Models\Doctor;
+use App\Models\Especialidad;
+use App\Models\Horarios;
+use Illuminate\Http\Request;
+
+class DoctorController extends Controller
+{
+    public function index()
+    {
+        // Obtener usuarios con rol doctor con todas las relaciones
+        $doctores = User::whereHas('roles', function ($query) {
+                            $query->where('name', 'Doctor');
+                        })
+                        ->with(['doctor.especialidad', 'doctor.horarios'])
+                        ->select('codigoUsuario', 'nombreCompleto', 'email', 'telefono')
+                        ->where('is_active', true)
+                        ->get();
+
+        $especialidades = Especialidad::all();
+
+        return view('doctores.index', compact('doctores', 'especialidades'));
+    }
+
+    public function obtenerDatos($codigoUsuario)
+    {
+        $usuario = User::with(['doctor.especialidad', 'doctor.horarios'])
+                       ->findOrFail($codigoUsuario);
+
+        return response()->json([
+            'usuario' => $usuario,
+            'doctor' => $usuario->doctor,
+            'horarios' => $usuario->doctor ? $usuario->doctor->horarios : []
+        ]);
+    }
+
+   public function guardarRegistroCrear(Request $request)
+{
+    $request->validate([
+        'codigoUsuario' => 'required|exists:users,codigoUsuario',
+        'especialidad' => 'required|exists:especialidades,codigoEspecialidad',
+        'horarios' => 'required|array|min:1',
+        'horarios.*.dia' => 'required|in:Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo',
+        'horarios.*.hora_inicio' => 'required|date_format:H:i',
+        'horarios.*.hora_fin' => 'required|date_format:H:i|after:horarios.*.hora_inicio',
+    ]);
+
+    $usuario = User::findOrFail($request->codigoUsuario);
+
+    if ($usuario->doctor) {
+        return response()->json(['message' => 'Este usuario ya tiene un registro de doctor.'], 422);
+    }
+
+    $doctor = Doctor::create([
+        'codigoUsuario' => $usuario->codigoUsuario,
+        'codigoEspecialidad' => $request->especialidad,
+    ]);
+
+    foreach ($request->horarios as $horario) {
+        Horarios::create([
+            'codigoDoctor' => $doctor->codigoDoctor,
+            'diaSemana' => strtolower($horario['dia']),
+            'horaInicio' => $horario['hora_inicio'],
+            'horaFin' => $horario['hora_fin'],
+        ]);
+    }
+
+    return response()->json(['message' => 'Registro de doctor creado correctamente']);
+}
+
+public function guardarRegistroEditar(Request $request)
+{
+    $request->validate([
+        'codigoUsuario' => 'required|exists:users,codigoUsuario',
+        'especialidad' => 'required|exists:especialidades,codigoEspecialidad',
+        'horarios' => 'required|array|min:1',
+        'horarios.*.dia' => 'required|in:Lunes,Martes,Miércoles,Jueves,Viernes,Sábado,Domingo',
+        'horarios.*.hora_inicio' => 'required|date_format:H:i',
+        'horarios.*.hora_fin' => 'required|date_format:H:i|after:horarios.*.hora_inicio',
+    ]);
+
+    $usuario = User::findOrFail($request->codigoUsuario);
+
+    $doctor = $usuario->doctor;
+    if (!$doctor) {
+        return response()->json(['message' => 'No existe un registro de doctor para este usuario.'], 422);
+    }
+
+    $doctor->update([
+        'codigoEspecialidad' => $request->especialidad,
+    ]);
+
+    $doctor->horarios()->delete();
+
+    foreach ($request->horarios as $horario) {
+        Horarios::create([
+            'codigoDoctor' => $doctor->codigoDoctor,
+            'diaSemana' => strtolower($horario['dia']),
+            'horaInicio' => $horario['hora_inicio'],
+            'horaFin' => $horario['hora_fin'],
+        ]);
+    }
+
+    return response()->json(['message' => 'Registro de doctor actualizado correctamente']);
+}
+
+
+}

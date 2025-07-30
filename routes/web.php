@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EspecialidadController;
+use App\Http\Controllers\DoctorController;
 
 
 
@@ -38,6 +39,14 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/usuarios/{id}/cambiar-estado', [App\Http\Controllers\UserController::class, 'cambiarEstado'])->name('usuarios.cambiarEstado');
     Route::patch('/medicamentos/{codigoMedicamento}/cambiar-estado', [App\Http\Controllers\MedicamentoController::class, 'cambiarEstado'])->name('medicamento.cambiarEstado');
    Route::resource('especialidades', App\Http\Controllers\EspecialidadController::class)->only(['index', 'create', 'store', 'edit', 'update']);
+   
+   // Grupo de rutas para Doctores
+    Route::prefix('doctores')->name('doctores.')->group(function () {
+    Route::get('/', [DoctorController::class, 'index'])->name('index');
+    Route::get('/obtener-datos/{id}', [DoctorController::class, 'obtenerDatos'])->name('obtener-datos');
+    Route::post('/crear-registro', [DoctorController::class, 'guardarRegistroCrear'])->name('crear-registro');
+    Route::post('/guardar-registro', [DoctorController::class, 'guardarRegistroEditar'])->name('guardar-registro'); // editar
+});
 
 
     Route::resource('/pacientes','App\Http\Controllers\pacienteController');

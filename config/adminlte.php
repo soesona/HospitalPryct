@@ -348,6 +348,12 @@ return [
             'icon' => 'fas fa-fw fa-user',
             'can' => 'gestionar usuarios',
         ],
+        [
+            'text' => 'Doctores',
+            'url' => '/doctores',
+            'icon' => 'fas fa-fw fa-user-md', 
+            'can' => 'gestionar doctores', 
+         ],
          [
             'text' => 'Enfermedades',
             'url' => '/enfermedad',

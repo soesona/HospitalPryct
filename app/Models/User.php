@@ -44,4 +44,9 @@ class User extends Authenticatable
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
     }
+
+    public function doctor()
+    {
+        return $this->hasOne(Doctor::class, 'codigoUsuario', 'codigoUsuario');
+    }
 }
