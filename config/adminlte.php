@@ -318,6 +318,12 @@ return [
         'icon' => 'fas fa-home',
         
         ],
+        [
+        'text' => 'Agendar Citas',
+        'url'  => '/citas',
+        'icon' => 'fas fa-calendar-check',
+        'can' => 'crear cita',
+       ],
 
         [
             'text' => 'blog',

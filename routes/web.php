@@ -8,20 +8,19 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EspecialidadController;
 use App\Http\Controllers\DoctorController;
-
-
+use App\Http\Controllers\CitaController;
 
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// En routes/web.php
+
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware('auth')
     ->name('dashboard');
 
-Route::middleware(['auth'])->group(function () {
+    Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
     Route::get('settings/profile', Profile::class)->name('settings.profile');
@@ -47,6 +46,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/crear-registro', [DoctorController::class, 'guardarRegistroCrear'])->name('crear-registro');
     Route::post('/guardar-registro', [DoctorController::class, 'guardarRegistroEditar'])->name('guardar-registro'); // editar
 });
+
+   // Mostrar listado de citas y el modal para agendar (GET)
+Route::get('/citas', [CitaController::class, 'index'])->name('citas.index');
+
+// Guardar cita (POST)
+Route::post('/citas', [CitaController::class, 'store'])->name('citas.store');
+
+// Rutas AJAX para cargar datos dinámicos
+Route::get('/doctores-por-especialidad/{id}', [CitaController::class, 'getDoctoresPorEspecialidad']);
+Route::get('/horas-disponibles/{codigoDoctor}/{fecha}', [CitaController::class, 'getHorasDisponibles']);
 
 
     Route::resource('/pacientes','App\Http\Controllers\pacienteController');

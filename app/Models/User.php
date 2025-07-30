@@ -49,4 +49,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(Doctor::class, 'codigoUsuario', 'codigoUsuario');
     }
+
+    public function paciente()
+{
+    return $this->hasOne(Paciente::class, 'codigoUsuario', 'codigoUsuario');
+}
+
 }

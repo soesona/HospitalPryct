@@ -157,6 +157,8 @@
   </div>
 </div>
 
+
+<!-- Modal Editar Notificacion -->
 <div class="modal fade" id="modalNotificacion" tabindex="-1" role="dialog" aria-labelledby="modalNotificacionLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
     <div class="modal-content border-0 shadow">

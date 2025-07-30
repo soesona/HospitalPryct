@@ -142,7 +142,7 @@
       <span class="info-box-icon bg-info"><i class="fas fa-pills"></i></span>
       <div class="info-box-content">
         <span class="info-box-text">Medicamento recetado en la última consulta</span>
-        <span class="info-box-number">{{ $medicamentoRecetado }}</span>
+        <span class="info-box-number">"Texto de prueba: aspirina"</span>
       </div>
     </div>
   </div>
@@ -152,7 +152,7 @@
       <span class="info-box-icon bg-success"><i class="far fa-calendar-alt"></i></span>
       <div class="info-box-content">
         <span class="info-box-text">Próxima cita agendada</span>
-        <span class="info-box-number">{{ $proximaCita }}</span>
+        <span class="info-box-number">--</span>
       </div>
     </div>
   </div>
@@ -163,9 +163,9 @@
   <div class="info-box-content">
     <span class="info-box-text">Última consulta</span>
     <span class="info-box-number" style="font-size: 14px; line-height: 1.3;">
-      {{ $fechaUltimaConsulta }}<br>
-      Especialidad: {{ $especialidad }}<br>
-      Doctor: {{ $doctor }}
+      Fecha de la ultima consulta: --<br>
+      Especialidad: --<br>
+      Doctor: --
     </span>
   </div>
 </div>
