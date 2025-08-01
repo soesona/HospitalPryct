@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EspecialidadController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\CitaController;
+use App\Http\Controllers\AdminCitaController;
 
 
 Route::get('/', function () {
@@ -56,6 +57,31 @@ Route::post('/citas', [CitaController::class, 'store'])->name('citas.store');
 // Rutas AJAX para cargar datos dinámicos
 Route::get('/doctores-por-especialidad/{id}', [CitaController::class, 'getDoctoresPorEspecialidad']);
 Route::get('/horas-disponibles/{codigoDoctor}/{fecha}', [CitaController::class, 'getHorasDisponibles']);
+
+// Rutas para la gestión de citas por administradores
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    
+    // Vista principal de gestión de citas
+    Route::get('/citas', [AdminCitaController::class, 'index'])->name('citas.index');
+    
+    // Agendar nueva cita
+    Route::post('/citas', [AdminCitaController::class, 'store'])->name('citas.store');
+    
+    // Cambiar estado de cita
+    Route::patch('/citas/{cita}/estado', [AdminCitaController::class, 'cambiarEstado'])->name('citas.estado');
+    
+    // Búsqueda de pacientes (AJAX)
+    Route::get('/buscar-pacientes', [AdminCitaController::class, 'buscarPacientes'])->name('buscar.pacientes');
+    
+    // Obtener doctores por especialidad excluyendo al paciente si es doctor (AJAX)
+    Route::get('/doctores-por-especialidad/{especialidad}/{paciente}', [AdminCitaController::class, 'getDoctoresPorEspecialidad'])->name('doctores.especialidad');
+    
+    // Rutas adicionales opcionales
+    Route::get('/citas/todas', [AdminCitaController::class, 'todasLasCitas'])->name('citas.todas');
+    Route::get('/citas/estadisticas', [AdminCitaController::class, 'estadisticas'])->name('citas.estadisticas');
+    Route::post('/citas/cancelar-multiples', [AdminCitaController::class, 'cancelarMultiples'])->name('citas.cancelar.multiples');
+    Route::get('/citas/exportar', [AdminCitaController::class, 'exportarCSV'])->name('citas.exportar');
+});
 
 
     Route::resource('/pacientes','App\Http\Controllers\pacienteController');

@@ -319,16 +319,26 @@ return [
         
         ],
         [
+            'text' => 'Consultas',
+            'url' => '/consulta',
+            'icon' => 'fas fa-notes-medical',
+            'can' => 'ver consultas',
+        
+        ],
+        ['header' => 'MI SALUD',
+        'can' => 'ver consultas',
+      ],
+        [
         'text' => 'Agendar Citas',
         'url'  => '/citas',
         'icon' => 'fas fa-calendar-check',
         'can' => 'crear cita',
        ],
-
-        [
-            'text' => 'blog',
-            'url' => 'admin/blog',
-            'can' => 'manage-blog',
+       [
+            'text' => 'Gestión de Citas',
+            'url'  => 'admin/citas',
+            'icon' => 'fas fa-calendar-plus',
+            'can'  => 'gestionar citas', 
         ],
         [
             'text' => 'Medicamentos',
@@ -337,17 +347,9 @@ return [
             'can' => 'gestionar medicamentos',
         
         ],
-        ['header' => 'account_settings'],
-        [
-            'text' => 'profile',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
-        ],
-        [
-            'text' => 'change_password',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
+        ['header' => 'GESTIÓN DE USUARIOS',
+        'can' => 'gestionar usuarios',
+      ],
         [
             'text' => 'Usuarios',
             'url' => '/usuarios',
@@ -361,25 +363,19 @@ return [
             'can' => 'gestionar doctores', 
          ],
          [
-            'text' => 'Enfermedades',
-            'url' => '/enfermedad',
-            'icon' => 'fas fa-virus',
-            'can' => 'gestionar enfermedades',
-        
-        ],
-         [
-            'text' => 'Consultas',
-            'url' => '/consulta',
-            'icon' => 'fas fa-virus',
-            'can' => 'ver consultas',
-        
-        ],
-
-        [
             'text' => 'Pacientes',
             'url' => '/pacientes',
             'icon' => 'fas fa-users',
             'can' => 'gestionar pacientes',
+        ],
+         ['header' => 'DATOS CLÍNICOS',
+         'can' => 'gestionar usuarios',
+         ],
+         [
+            'text' => 'Enfermedades',
+            'url' => '/enfermedad',
+            'icon' => 'fas fa-virus',
+            'can' => 'gestionar enfermedades',
         
         ],
 
@@ -388,6 +384,12 @@ return [
             'url'  => '/especialidades',
             'icon' => 'fas fa-plus',
             'can'  => 'gestionar especialidades',
+        ],
+        ['header' => 'account_settings'],
+        [
+            'text' => 'change_password',
+            'url' => 'admin/settings',
+            'icon' => 'fas fa-fw fa-lock',
         ],
       
     ],

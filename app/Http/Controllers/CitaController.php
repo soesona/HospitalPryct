@@ -21,9 +21,8 @@ class CitaController extends Controller
         } else {
             $citas = Cita::with(['doctor.user', 'paciente'])
             ->where('codigoPaciente', $paciente->codigoPaciente)
-            ->where('estado', 'pendiente') // solo pendientes
-            ->orderBy('fechaCita', 'desc') // más recientes primero
-            ->orderBy('horaInicio', 'desc') // luego por hora
+            ->orderBy('fechaCita', 'desc')
+            ->orderBy('horaInicio', 'desc')
             ->get();
         }
         $especialidades = Especialidad::all();

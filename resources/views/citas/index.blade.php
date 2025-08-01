@@ -1,3 +1,5 @@
+{{-- VISTA PARA QUE LOS PACIENTES AGENDEN SUS CITAS --}}
+
 @extends('adminlte::page')
 
 @section('title', 'Agendar Citas')
