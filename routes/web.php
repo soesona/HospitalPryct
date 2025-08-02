@@ -28,6 +28,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
     
+    Route::get('/usuarios/pdf', [UserController::class, 'exportarPDF'])->name('usuarios.pdf');
+    Route::get('/doctores/pdf', [DoctorController::class, 'exportarPDF'])->name('doctores.pdf');
    
     
 });
@@ -94,3 +96,5 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::put('/usuarios/{codigoUsuario}', [UserController::class, 'actualizar'])->name('usuarios.actualizar');
 
 require __DIR__.'/auth.php';
+
+

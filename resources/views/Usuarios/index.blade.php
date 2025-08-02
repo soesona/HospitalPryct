@@ -15,10 +15,17 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-         <button class="btn btn-primary" data-toggle="modal" data-target="#modalCrearUsuario">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#modalCrearUsuario">
             <i class="fas fa-user-plus"></i> Crear Usuario
+        </button>
+
+
+        <a href="{{ route('usuarios.pdf') }}" class="btn btn-secondary">
+            <i class="fas fa-file-pdf"></i> Exportar PDF
         </a>
     </div>
+
+
     <div class="card-body table-responsive">
         <table id="pagination-table" class="table table-bordered table-striped">
             <thead>

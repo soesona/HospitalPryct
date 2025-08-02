@@ -7,6 +7,8 @@ use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Validation\Rule;
 
+use PDF; 
+
 class UserController extends Controller
 {
 
@@ -161,4 +163,12 @@ private function mensajesValidacion()
     ];
 }
 
+public function exportarPDF()
+{
+    $usuarios = User::all();
+    $pdf = PDF::loadView('reportes.usuariosreportes', compact('usuarios'));
+    return $pdf->download('reporte_usuarios.pdf');
+
+
 }
+} 

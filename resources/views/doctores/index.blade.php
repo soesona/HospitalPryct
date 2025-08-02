@@ -7,11 +7,22 @@
 
 @stop
 
-@section('content')
-<div class="container">
-    <h2>Gestión de Doctores</h2>
+@section('content_header')
+    <h1>Doctores registrados</h1>
+@stop
 
-    <table id="pagination-table" class="table table-bordered table-striped">
+@section('content')
+
+<div class="card">
+    <div class="card-header">
+        <a href="{{ route('doctores.pdf') }}" class="btn btn-secondary">
+            <i class="fas fa-file-pdf"></i> Exportar PDF
+        </a>
+    </div>
+
+
+   <div class="card-body table-responsive">
+        <table id="pagination-table" class="table table-bordered table-striped">
         <thead>
             <tr>
             <th>Código Doctor</th>
@@ -179,6 +190,8 @@
 
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 
@@ -366,5 +379,6 @@ $(document).ready(function(){
 });
 
 </script>
+
 @vite('resources/js/app.js') 
 @stop

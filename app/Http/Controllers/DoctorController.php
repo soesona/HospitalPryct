@@ -7,6 +7,7 @@ use App\Models\Doctor;
 use App\Models\Especialidad;
 use App\Models\Horarios;
 use Illuminate\Http\Request;
+use PDF;
 
 class DoctorController extends Controller
 {
@@ -106,6 +107,18 @@ public function guardarRegistroEditar(Request $request)
     }
 
     return response()->json(['message' => 'Registro de doctor actualizado correctamente']);
+}
+
+public function exportarPDF()
+{
+    $doctores= User::whereHas('roles', function ($query) {
+        $query->where('name', 'Doctor');
+    })->with(['doctor.especialidad', 'doctor.horarios'])->get();
+    $pdf = PDF::loadView('reportes.doctoresreportes', compact('doctores'));
+    return $pdf->download('reporte_doctores.pdf');
+    
+
+
 }
 
 
