@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\User; 
 use Spatie\Permission\Models\Role;
 use Illuminate\Validation\Rule;
+use App\Rules\UserRules;
+
 
 use PDF; 
 
@@ -23,23 +25,17 @@ class UserController extends Controller
         return view('usuarios.index', compact('usuarios', 'roles')); 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+   
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-         $validated = $request->validate(
-        $this->reglasValidacion(), 
-        $this->mensajesValidacion()
-    );
+       $validated = $request->validate(
+    UserRules::store(),
+    UserRules::messages()
+);
 
     $usuario = new User();
     $usuario->nombreCompleto = mb_strtoupper($validated['nombreCompleto'], 'UTF-8');
@@ -61,31 +57,15 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
 
-         $validated = $request->validate(
-        $this->reglasValidacion($id),
-        $this->mensajesValidacion()
-    );
+        $validated = $request->validate(
+    UserRules::update($id),
+    UserRules::messages()
+);
 
     $validated['nombreCompleto'] = mb_strtoupper($validated['nombreCompleto'], 'UTF-8');
     $validated['identidad'] = strtoupper($validated['identidad']);
@@ -98,13 +78,7 @@ class UserController extends Controller
     return redirect()->back()->withInput(); 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+   
 
     public function cambiarEstado($id)
 {
@@ -131,37 +105,7 @@ class UserController extends Controller
         return redirect('/usuarios');
     }   
 
-   private function reglasValidacion($codigoUsuario = null)
-{
-    return [
    
-        'password' => ['nullable', 'string', 'min:6'],
-        'nombreCompleto' => ['required', 'string', 'max:60', 'regex:/^[\pL\s]+$/u'],
-        'email' => [
-            'required', 'email', 'max:255', 'not_regex:/\s/',
-            Rule::unique('users', 'email')->ignore($codigoUsuario, 'codigoUsuario')
-        ],
-        'identidad' => [
-            'required', 'digits:13',
-            Rule::unique('users', 'identidad')->ignore($codigoUsuario, 'codigoUsuario')
-        ],
-        'fechaNacimiento' => ['required', 'date'],
-        'telefono' => ['required', 'digits:8'],
-    ];
-}
-
-private function mensajesValidacion()
-{
-    return [
-        'nombreCompleto.regex' => 'El nombre solo debe contener letras y espacios.',
-        'email.not_regex' => 'El email no puede contener espacios.',
-        'identidad.digits' => 'La identidad debe tener exactamente 13 números.',
-        'telefono.digits' => 'El teléfono debe tener exactamente 8 números.',
-        'identidad.unique' => 'Esta identidad ya está en uso.',
-        'email.unique' => 'Este email ya está registrado.',
-        'password.min' => 'La contraseña debe tener al menos 6 caracteres.',
-    ];
-}
 
 public function exportarPDF()
 {

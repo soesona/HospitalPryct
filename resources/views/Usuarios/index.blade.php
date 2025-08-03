@@ -48,15 +48,15 @@
                     <td>{{ $usuario->created_at->format('d/m/Y') }}</td>
                     <td>
                         <button class="btn btn-warning btn-sm EditarUsuario"
-                         data-toggle="modal" data-target="#modalEditarUsuario"
-                         data-codigousu="{{ $usuario->codigoUsuario }}"
-                         data-nombre="{{ $usuario->nombreCompleto }}"
-                         data-email="{{ $usuario->email }}"
-                         data-identidad="{{ $usuario->identidad }}"
-                         data-fechanac="{{ $usuario->fechaNacimiento }}"
-                         data-telefono="{{ $usuario->telefono }}">
-                         <i class="fas fa-edit"></i> Editar
-                         </button>
+    data-toggle="modal" data-target="#modalEditarUsuario"
+    data-codigousu="{{ $usuario->codigoUsuario }}"
+    data-nombre="{{ ucwords(strtolower($usuario->nombreCompleto)) }}"
+    data-email="{{ $usuario->email }}"
+    data-identidad="{{ $usuario->identidad }}"
+    data-fechanac="{{ $usuario->fechaNacimiento }}"
+    data-telefono="{{ $usuario->telefono }}">
+    <i class="fas fa-edit"></i> Editar
+</button>
                         <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#modalAsignar{{ $usuario->codigoUsuario }}">
                             <i class="fas fa-user-cog"></i> Asignar roles
                         </button>
@@ -141,7 +141,7 @@
            
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
+                    <input type="text" name="email" class="form-control" value="{{ old('email') }}" required>
                     @error('email')
                         <small class="text-danger">{{ $message }}</small>
                     @enderror
@@ -182,6 +182,10 @@
                         <small class="text-danger">{{ $message }}</small>
                     @enderror
                 </div>
+<div class="form-group">
+    <label>Confirmar Contraseña</label>
+    <input type="password" name="password_confirmation" class="form-control" required>
+</div>
 
             </div>
             <div class="modal-footer">
@@ -212,7 +216,7 @@
 
 <div class="form-group">
     <label>Email</label>
-    <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}" required>
+    <input type="text" name="email" id="email" class="form-control" value="{{ old('email') }}" required>
     @error('email')
         <small class="text-danger">{{ $message }}</small>
     @enderror

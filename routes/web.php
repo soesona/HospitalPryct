@@ -28,6 +28,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
     
+
+    //reportes 
     Route::get('/usuarios/pdf', [UserController::class, 'exportarPDF'])->name('usuarios.pdf');
     Route::get('/doctores/pdf', [DoctorController::class, 'exportarPDF'])->name('doctores.pdf');
    

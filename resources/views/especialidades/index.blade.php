@@ -47,7 +47,7 @@
         </div>
     </div>
 
-    <!-- Modal Crear -->
+    
     <div class="modal fade" id="modalCrearEspecialidad" tabindex="-1" role="dialog" aria-labelledby="modalCrearEspecialidadLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <form action="{{ route('especialidades.store') }}" method="POST" class="modal-content">

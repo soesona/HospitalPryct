@@ -8,4 +8,5 @@ class Enfermedad extends Model
 {
     protected $table = 'enfermedades'; 
     protected $primaryKey = 'codigoEnfermedad';
+    protected $fillable = ['nombre'];
 }

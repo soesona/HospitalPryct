@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use App\Rules\UserRules;
 
 #[Layout('components.layouts.auth')]
 class Register extends Component
@@ -25,23 +26,18 @@ class Register extends Component
      */
     public function register(): void
 {
-    $validated = $this->validate([
-        'nombreCompleto' => ['required', 'string', 'max:60'],
-        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-        'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
-        'identidad' => ['required', 'string', 'size:13', 'unique:' . User::class],
-        'fechaNacimiento' => ['required', 'date'],
-        'telefono' => ['required', 'string', 'size:8'],
-    ]);
-
+    $validated = $this->validate(UserRules::store(), UserRules::messages());
   
+    $validated['nombreCompleto'] = mb_strtoupper($validated['nombreCompleto'], 'UTF-8');
+    $validated['email'] = strtolower($validated['email']);
+    $validated['identidad'] = strtoupper($validated['identidad']);
+    $validated['telefono'] = strtoupper($validated['telefono']);
     $validated['password'] = Hash::make($validated['password']);
+
 
   
     $user = User::create($validated);
-
-    // Asignamos el rol 
-$user->assignRole('Paciente');
+    $user->assignRole('Paciente');
 
     // Crear registro en pacientes vinculando el usuario
     \App\Models\Paciente::create([

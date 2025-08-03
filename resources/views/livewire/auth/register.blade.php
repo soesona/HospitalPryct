@@ -48,7 +48,7 @@
         <flux:input
             wire:model="email"
             :label="__('Correo electrónico')"
-            type="email"
+            type="text"
             required
             autocomplete="email"
             placeholder="correo@ejemplo.com"
