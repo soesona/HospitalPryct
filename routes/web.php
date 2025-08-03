@@ -38,7 +38,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 });
     Route::resource('/usuarios','App\Http\Controllers\UserController');
     Route::resource('/enfermedades','App\Http\Controllers\EnfermedadController');
-    Route::resource('enfermedades', App\Http\Controllers\EnfermedadController::class)->only(['index', 'create', 'store', 'edit', 'update']);
+    Route::resource('enfermedad', App\Http\Controllers\EnfermedadController::class)->only(['index', 'create', 'store', 'edit', 'update']);
     Route::resource('/consultas','App\Http\Controllers\ConsultasController');
     Route::resource('/admin/medicamentos','App\Http\Controllers\MedicamentoController')->parameters(['medicamentos' => 'codigoMedicamento']);
     Route::put('/admin/medicamentos','App\Http\Controllers\MedicamentoController@update');
