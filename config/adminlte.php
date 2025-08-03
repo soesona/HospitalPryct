@@ -320,7 +320,7 @@ return [
         ],
         [
             'text' => 'Consultas',
-            'url' => '/consulta',
+            'url' => '/consultas',
             'icon' => 'fas fa-notes-medical',
             'can' => 'ver consultas',
         
@@ -340,6 +340,14 @@ return [
             'icon' => 'fas fa-calendar-plus',
             'can'  => 'gestionar citas', 
         ],
+
+        [
+            'text' => 'Gestionar Consultas',
+            'url'  => '/consultas',
+            'icon' => 'fas fa-calendar-minus',
+            'can'  => 'gestionar citas', 
+        ],
+
         [
             'text' => 'Medicamentos',
             'url' => 'admin/medicamentos',
@@ -373,7 +381,7 @@ return [
          ],
          [
             'text' => 'Enfermedades',
-            'url' => '/enfermedad',
+            'url' => '/enfermedades',
             'icon' => 'fas fa-virus',
             'can' => 'gestionar enfermedades',
         

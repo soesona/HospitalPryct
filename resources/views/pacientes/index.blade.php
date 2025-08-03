@@ -29,7 +29,7 @@
                         <tr>
                             <td>{{ $paciente->codigoPaciente }}</td>
                             <td>{{ $paciente->codigoUsuario }}</td>
-                            <td>{{ $paciente->usuario->nombreCompleto}}</td>
+                            <td>{{ ucfirst(strtolower($paciente->usuario->nombreCompleto))}}</td>
                             <td>
                                 <button class="btn btn-warning btn-sm ejecutar"
                                     data-toggle="modal" data-target="#mEditarPaciente"
@@ -72,7 +72,7 @@
     </div>
 
     <!-- Modal Editar -->
-    <div class="modal fade" id="mEditarMedicamento" tabindex="-1">
+    <div class="modal fade" id="mEditarPaciente" tabindex="-1">
         <div class="modal-dialog">
             <form action="/pacientes" method="POST" class="modal-content" id="miFormU">
                 @csrf

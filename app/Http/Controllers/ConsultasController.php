@@ -3,6 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Cita;
+use App\Models\Doctor;
+use App\Models\Consulta;
+use App\Models\Paciente;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class ConsultasController extends Controller
 {
@@ -11,8 +17,25 @@ class ConsultasController extends Controller
      */
     public function index()
     {
-       return view('consultas.index'); 
+    $usuario = Auth::user();
+    $doctor = $usuario->doctor;
+
+    if (!$doctor) {
+        $consultas = collect();
+        $citas = collect();
+    } else {
+        $consultas = Consulta::where('codigoDoctor', $doctor->codigoDoctor)->get();
+        $citas = \App\Models\Cita::with('paciente')
+            ->where('codigoDoctor', $doctor->codigoDoctor)
+            ->where('estado', 'pendiente')
+            ->orderBy('fechaCita', 'asc')
+            ->get();
     }
+
+    return view('consultas.index', compact('consultas', 'citas'));
+    }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -27,8 +50,39 @@ class ConsultasController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+        'codigoCita' => 'required|exists:citas,codigoCita|unique:consultas,codigoCita',
+        'codigoPaciente' => 'required|exists:pacientes,codigoPaciente',
+        'codigoDoctor' => 'required|exists:doctores,codigoDoctor',
+        'codigoEnfermedad' => 'required|exists:enfermedades,codigoEnfermedad',
+        'diagnostico' => 'required|string',
+        'observaciones' => 'nullable|string',
+        ]);
+
+        $consultas = Consulta::with([
+       'paciente.usuario',
+        'doctor.usuario',
+        'enfermedad'
+        ])
+        ->where('codigoDoctor', $doctor->codigoDoctor)
+        ->get();
+
+
+        $consulta = new Consulta();
+        $consulta->codigoCita = $request->codigoCita;
+        $consulta->codigoPaciente = $request->codigoPaciente;
+        $consulta->codigoDoctor = $request->codigoDoctor;
+        $consulta->codigoEnfermedad = $request->codigoEnfermedad;
+        $consulta->diagnostico = $request->diagnostico;
+        $consulta->observaciones = $request->observaciones;
+        $consulta->save();
+
+        \App\Models\Cita::where('codigoCita', $request->codigoCita)
+        ->update(['estado' => 'confirmada']);
+
+        return redirect()->back()->with('success', 'Consulta registrada correctamente.');
     }
+
 
     /**
      * Display the specified resource.

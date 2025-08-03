@@ -13,7 +13,7 @@ class EnfermedadController extends Controller
     public function index()
     {
         $enfermedades = Enfermedad::all(); 
-        return view('Enfermedades.enfermedades', compact('enfermedades')); 
+        return view('Enfermedades.index', compact('enfermedades')); 
     }
 
 
@@ -22,47 +22,47 @@ class EnfermedadController extends Controller
      */
     public function store(Request $request)
     {
-       $request->validate([
-    'nombre' => [
-        'required',
-        'string',
-        'max:100',
-        'regex:/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ](?!.*--)(?!.*-$)[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9\- ]*$/'
-    ],
-], [
-    'nombre.regex' => 'El nombre debe comenzar con una letra, no puede contener guiones dobles ni terminar en guion.',
-]);
-
-        Enfermedad::create([
-            'nombre' => strtoupper($request->nombre),  
+        //
+        $request->validate([
+            'nombre' => 'required|string|max:100',
         ]);
 
-         return redirect()->back()->withInput(); 
+        Enfermedad::create([
+            'nombre' => strtoupper($request->nombre),  // Guardar en mayúsculas
+        ]);
+
+        return redirect()->route('enfermedades.index')->with('success', 'Enfermedad registrada exitosamente.');
     }
 
-   
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-          $request->validate([
-        'nombre' => [
-            'required',
-            'string',
-            'max:100',
-            'regex:/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ](?!.*--)(?!.*-$)[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9\- ]*$/'
-             ],
-       ], [
-    'nombre.regex' => 'El nombre debe comenzar con una letra, no puede contener guiones dobles ni terminar en guion.',
-]);
-
-    $enfermedad = Enfermedad::findOrFail($id);
-    $enfermedad->nombre = strtoupper($request->nombre); 
-    $enfermedad->save();
-
-    return redirect('/enfermedad');
+        //
     }
 
-   
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
 }

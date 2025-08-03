@@ -10,6 +10,7 @@ use App\Http\Controllers\EspecialidadController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\AdminCitaController;
+use App\Http\Controllers\EnfermedadController;
 
 
 Route::get('/', function () {
@@ -36,8 +37,9 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     
 });
     Route::resource('/usuarios','App\Http\Controllers\UserController');
-    Route::resource('/enfermedad','App\Http\Controllers\EnfermedadController');
-    Route::resource('/consulta','App\Http\Controllers\ConsultasController');
+    Route::resource('/enfermedades','App\Http\Controllers\EnfermedadController');
+    Route::resource('enfermedades', App\Http\Controllers\EnfermedadController::class)->only(['index', 'create', 'store', 'edit', 'update']);
+    Route::resource('/consultas','App\Http\Controllers\ConsultasController');
     Route::resource('/admin/medicamentos','App\Http\Controllers\MedicamentoController')->parameters(['medicamentos' => 'codigoMedicamento']);
     Route::put('/admin/medicamentos','App\Http\Controllers\MedicamentoController@update');
     Route::patch('/usuarios/{id}/cambiar-estado', [App\Http\Controllers\UserController::class, 'cambiarEstado'])->name('usuarios.cambiarEstado');
