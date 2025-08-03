@@ -13,7 +13,7 @@ class MedicamentoController extends Controller
         return view('medicamento.index')->with('listaMedicamentos', $datosMedicamentos);
     }
 
-    // ✅ FUNCIÓN CORREGIDA - store 
+    
     public function store(Request $request)
     {
         try {
@@ -64,7 +64,6 @@ class MedicamentoController extends Controller
         }
     }
 
-    // ✅ FUNCIÓN CORREGIDA - update usando PUT /admin/medicamentos
     public function update(Request $request)
     {
         try {

@@ -192,14 +192,14 @@
 <script>
 $(document).ready(function(){
 
-    // ✅ Configurar token CSRF globalmente
+    
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
 
-    // ✅ Configurar fecha mínima
+    
     const hoy = new Date().toISOString().split('T')[0];
     $('input[name="fechaVencimiento"]').attr('min', hoy);
     $('input[name="fechaVencimientou"]').attr('min', hoy);
@@ -266,7 +266,7 @@ $(document).ready(function(){
         }
     });
 
-    // ✅ CREAR MEDICAMENTO - USA TU RUTA RESOURCE
+    
     $('#formCrearMedicamento').submit(function(e){
         const nombreVal = $('#nombre').val();
         if (/^\d/.test(nombreVal)) {
@@ -284,7 +284,7 @@ $(document).ready(function(){
         submitBtn.prop('disabled', true).text('Registrando...');
 
         $.ajax({
-            url: '/admin/medicamentos', // ✅ Tu ruta resource POST
+            url: '/admin/medicamentos', 
             method: 'POST',
             data: $(this).serialize(),
             success: function(response){
@@ -308,7 +308,7 @@ $(document).ready(function(){
         });
     });
 
-    // ✅ EDITAR MEDICAMENTO - USA TU RUTA PUT ESPECÍFICA
+   
     $('#formEditarMedicamento').submit(function(e){
         const nombreVal = $('#nombreu').val();
         if (/^\d/.test(nombreVal)) {
@@ -326,7 +326,7 @@ $(document).ready(function(){
         submitBtn.prop('disabled', true).text('Guardando...');
 
         $.ajax({
-            url: '/admin/medicamentos', // ✅ Tu ruta PUT específica
+            url: '/admin/medicamentos', 
             method: 'PUT',
             data: $(this).serialize(),
             success: function(response){
