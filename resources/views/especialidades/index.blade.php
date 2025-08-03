@@ -63,7 +63,8 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="nombreCrear">Nombre <span class="text-danger">*</span></label>
-                        <input type="text" name="nombre" id="nombreCrear" class="form-control" required maxlength="100">
+                        <input type="text" name="nombre" id="nombreCrear" class="form-control" required maxlength="100"
+                        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$" title="Solo se permiten letras y espacios">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -90,7 +91,8 @@
                     <input type="hidden" name="codigoEspecialidad" id="codigoEspecialidadEditar">
                     <div class="form-group">
                         <label for="nombreEditar">Nombre <span class="text-danger">*</span></label>
-                        <input type="text" name="nombre" id="nombreEditar" class="form-control" required maxlength="100">
+                        <input type="text" name="nombre" id="nombreEditar" class="form-control" required maxlength="100"
+                        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$" title="Solo se permiten letras y espacios">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -143,6 +145,11 @@
 
 <script>
 $(document).ready(function(){
+
+    // Permitir solo letras y espacios en ambos inputs
+$('#nombreCrear, #nombreEditar').on('input', function() {
+    this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ ]/g, '');
+});
 
    
     $.ajaxSetup({

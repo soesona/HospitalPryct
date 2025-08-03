@@ -19,10 +19,11 @@ class EspecialidadController extends Controller
     {
         try {
             $request->validate([
-                'nombre' => [
+                    'nombre' => [
                     'required',
                     'string',
                     'max:100',
+                    'regex:/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/u', // Permitir solo letras y espacios
                     function ($attribute, $value, $fail) {
                         // Verificar si ya existe una especialidad con el mismo nombre (case insensitive)
                         $existe = Especialidad::whereRaw('LOWER(nombre) = ?', [strtolower(trim($value))])->exists();
@@ -77,10 +78,11 @@ class EspecialidadController extends Controller
     {
         try {
             $request->validate([
-                'nombre' => [
+                    'nombre' => [
                     'required',
                     'string',
                     'max:100',
+                    'regex:/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/u', // Permitir solo letras y espacios
                     function ($attribute, $value, $fail) use ($id) {
                         // Verificar si ya existe otra especialidad con el mismo nombre (excluyendo la actual)
                         $existe = Especialidad::whereRaw('LOWER(nombre) = ?', [strtolower(trim($value))])
