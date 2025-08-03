@@ -186,6 +186,22 @@
   </div>
 </div>
 
+<div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="modalErrorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-body text-center p-4">
+        <div class="mb-3">
+          <div class="rounded-circle bg-danger d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+            <i class="fas fa-times text-white" style="font-size: 24px;"></i>
+          </div>
+        </div>
+        <h5 class="modal-title font-weight-bold text-dark mb-2" id="modalErrorTitulo">Error</h5>
+        <p class="text-muted mb-0" id="modalErrorMensaje">Ha ocurrido un error.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 @stop
 
 @section('js')
@@ -206,6 +222,36 @@ $(document).ready(function(){
     setTimeout(function(){
       $('#modalNotificacion').modal('hide');
     }, 2500);
+  }
+
+  function mostrarError(titulo, mensaje) {
+    $('#modalErrorTitulo').text(titulo);
+    $('#modalErrorMensaje').text(mensaje);
+    $('#modalError').modal('show');
+    
+    setTimeout(function(){
+      $('#modalError').modal('hide');
+    }, 3500);
+  }
+
+  
+  function procesarErroresValidacion(xhr) {
+    let mensaje = 'Error inesperado';
+    
+    if (xhr.responseJSON) {
+      // Si hay errores de validación específicos
+      if (xhr.responseJSON.errors) {
+        const errores = xhr.responseJSON.errors;
+        const primerError = Object.values(errores)[0];
+        mensaje = Array.isArray(primerError) ? primerError[0] : primerError;
+      }
+      // Si hay un mensaje general
+      else if (xhr.responseJSON.message) {
+        mensaje = xhr.responseJSON.message;
+      }
+    }
+    
+    return mensaje;
   }
 
   function crearHorarioHTML(index, dia = '', inicio = '', fin = '') {
@@ -305,7 +351,7 @@ $(document).ready(function(){
         $('#modalEditar').modal('show');
       },
       error: function() {
-        alert('Error al cargar los datos del doctor');
+        mostrarError('Error', 'No se pudieron cargar los datos del doctor');
       }
     });
   });
@@ -314,7 +360,7 @@ $(document).ready(function(){
     e.preventDefault();
 
     if ($('#crearHorariosContainer .horario-item').length === 0) {
-      alert('Debe agregar al menos un horario.');
+      mostrarError('Datos incompletos', 'Debe agregar al menos un horario.');
       return false;
     }
 
@@ -333,7 +379,8 @@ $(document).ready(function(){
         }, 1500);
       },
       error: function(xhr){
-        alert('Error: ' + (xhr.responseJSON?.message || 'Error inesperado'));
+        const mensajeError = procesarErroresValidacion(xhr);
+        mostrarError('Error de validación', mensajeError);
       },
       complete: function() {
         submitBtn.prop('disabled', false).text('Guardar Registro');
@@ -345,7 +392,7 @@ $(document).ready(function(){
     e.preventDefault();
 
     if ($('#editarHorariosContainer .horario-item').length === 0) {
-      alert('Debe agregar al menos un horario.');
+      mostrarError('Datos incompletos', 'Debe agregar al menos un horario.');
       return false;
     }
 
@@ -364,7 +411,8 @@ $(document).ready(function(){
         }, 1500);
       },
       error: function(xhr){
-        alert('Error: ' + (xhr.responseJSON?.message || 'Error inesperado'));
+        const mensajeError = procesarErroresValidacion(xhr);
+        mostrarError('Error de validación', mensajeError);
       },
       complete: function() {
         submitBtn.prop('disabled', false).text('Guardar Cambios');
