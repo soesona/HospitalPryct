@@ -83,7 +83,8 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Nombre <span class="text-danger">*</span></label>
-                        <input type="text" name="nombre" class="form-control" required maxlength="100">
+                       <input type="text" name="nombre" id="nombre" class="form-control" required maxlength="100">
+                        <small id="error-nombre" class="text-danger d-none">El nombre no puede iniciar con un número.</small>
                     </div>
                     <div class="form-group">
                         <label>Descripción <span class="text-danger">*</span></label>
@@ -124,6 +125,7 @@
                     <div class="form-group">
                         <label>Nombre <span class="text-danger">*</span></label>
                         <input type="text" id="nombreu" name="nombreu" class="form-control" required maxlength="100">
+                        <small id="error-nombreu" class="text-danger d-none">El nombre no puede iniciar con un número.</small>
                     </div>
                     <div class="form-group">
                         <label>Descripción <span class="text-danger">*</span></label>
@@ -190,14 +192,14 @@
 <script>
 $(document).ready(function(){
 
-    
+    // ✅ Configurar token CSRF globalmente
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
 
-    
+    // ✅ Configurar fecha mínima
     const hoy = new Date().toISOString().split('T')[0];
     $('input[name="fechaVencimiento"]').attr('min', hoy);
     $('input[name="fechaVencimientou"]').attr('min', hoy);
@@ -240,8 +242,41 @@ $(document).ready(function(){
         return mensaje;
     }
 
-    
+    // Validar que nombre no inicie con número en Crear
+    $('#nombre').on('input', function () {
+        const val = $(this).val();
+        if (/^\d/.test(val)) {
+            $(this).addClass('is-invalid');
+            $('#error-nombre').removeClass('d-none');
+        } else {
+            $(this).removeClass('is-invalid');
+            $('#error-nombre').addClass('d-none');
+        }
+    });
+
+    // Validar que nombre no inicie con número en Editar
+    $('#nombreu').on('input', function () {
+        const val = $(this).val();
+        if (/^\d/.test(val)) {
+            $(this).addClass('is-invalid');
+            $('#error-nombreu').removeClass('d-none');
+        } else {
+            $(this).removeClass('is-invalid');
+            $('#error-nombreu').addClass('d-none');
+        }
+    });
+
+    // ✅ CREAR MEDICAMENTO - USA TU RUTA RESOURCE
     $('#formCrearMedicamento').submit(function(e){
+        const nombreVal = $('#nombre').val();
+        if (/^\d/.test(nombreVal)) {
+            e.preventDefault();
+            $('#nombre').addClass('is-invalid');
+            $('#error-nombre').removeClass('d-none');
+            mostrarError('Error de validación', 'El nombre no puede iniciar con un número.');
+            return false;
+        }
+
         e.preventDefault();
 
         const submitBtn = $(this).find('button[type="submit"]');
@@ -249,7 +284,7 @@ $(document).ready(function(){
         submitBtn.prop('disabled', true).text('Registrando...');
 
         $.ajax({
-            url: '/admin/medicamentos', 
+            url: '/admin/medicamentos', // ✅ Tu ruta resource POST
             method: 'POST',
             data: $(this).serialize(),
             success: function(response){
@@ -273,8 +308,17 @@ $(document).ready(function(){
         });
     });
 
-    //  EDITAR MEDICAMENTO 
+    // ✅ EDITAR MEDICAMENTO - USA TU RUTA PUT ESPECÍFICA
     $('#formEditarMedicamento').submit(function(e){
+        const nombreVal = $('#nombreu').val();
+        if (/^\d/.test(nombreVal)) {
+            e.preventDefault();
+            $('#nombreu').addClass('is-invalid');
+            $('#error-nombreu').removeClass('d-none');
+            mostrarError('Error de validación', 'El nombre no puede iniciar con un número.');
+            return false;
+        }
+
         e.preventDefault();
 
         const submitBtn = $(this).find('button[type="submit"]');
@@ -282,7 +326,7 @@ $(document).ready(function(){
         submitBtn.prop('disabled', true).text('Guardando...');
 
         $.ajax({
-            url: '/admin/medicamentos', 
+            url: '/admin/medicamentos', // ✅ Tu ruta PUT específica
             method: 'PUT',
             data: $(this).serialize(),
             success: function(response){
@@ -313,6 +357,10 @@ $(document).ready(function(){
         $('#descripcionu').val($(this).data('descripcion'));
         $('#stocku').val($(this).data('stock'));
         $('#fechaVencimientou').val($(this).data('fechav'));
+
+        // Limpiar validaciones al cargar datos
+        $('#nombreu').removeClass('is-invalid');
+        $('#error-nombreu').addClass('d-none');
     });
 
     // Función para confirmar cambio de estado
@@ -326,13 +374,17 @@ $(document).ready(function(){
     $('#modalCrear').on('hidden.bs.modal', function () {
         $('#formCrearMedicamento')[0].reset();
         $('#formCrearMedicamento .form-control').removeClass('is-invalid');
+        $('#error-nombre').addClass('d-none');
     });
 
     $('#mEditarMedicamento').on('hidden.bs.modal', function () {
         $('#formEditarMedicamento .form-control').removeClass('is-invalid');
+        $('#error-nombreu').addClass('d-none');
     });
+
 });
 </script>
+
 @vite('resources/js/app.js')
 
 @stop

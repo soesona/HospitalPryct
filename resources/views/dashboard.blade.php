@@ -57,7 +57,7 @@
     </x-adminlte-card>
 @endif
 
-{{-- dashboard del doctor --}}//
+{{-- dashboard del doctor --}}
     @elseif(Auth::user()->can('ver pacientes asignados'))
         <p class="text-muted">Este es su panel de control clínico.</p>
         <div class="row">

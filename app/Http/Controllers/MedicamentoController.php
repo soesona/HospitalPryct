@@ -13,15 +13,17 @@ class MedicamentoController extends Controller
         return view('medicamento.index')->with('listaMedicamentos', $datosMedicamentos);
     }
 
-    
+    // ✅ FUNCIÓN CORREGIDA - store 
     public function store(Request $request)
     {
         try {
             $request->validate([
-                'nombre' => [
+                    'nombre' => [
                     'required',
                     'string',
                     'max:100',
+                    'regex:/^[A-Za-zÁÉÍÓÚáéíóúÑñ][A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s\-.,]*$/',
+                    'unique:medicamentos,nombre',
                     function ($attribute, $value, $fail) {
                         $existe = medicamento::whereRaw('LOWER(nombre) = ?', [strtolower(trim($value))])->exists();
                         
@@ -62,16 +64,17 @@ class MedicamentoController extends Controller
         }
     }
 
-    
+    // ✅ FUNCIÓN CORREGIDA - update usando PUT /admin/medicamentos
     public function update(Request $request)
     {
         try {
             $request->validate([
                 'codigoMedicamentou' => 'required|exists:medicamentos,codigoMedicamento',
-                'nombreu' => [
+                    'nombreu' => [
                     'required',
                     'string',
                     'max:100',
+                    'regex:/^[A-Za-zÁÉÍÓÚáéíóúÑñ][A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s\-.,]*$/',
                     function ($attribute, $value, $fail) use ($request) {
                         $existe = medicamento::whereRaw('LOWER(nombre) = ?', [strtolower(trim($value))])
                                             ->where('codigoMedicamento', '!=', $request->codigoMedicamentou)
