@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Paciente;
 use App\Models\User;
 use Illuminate\Http\Request;
+use PDF;
 
 class pacienteController extends Controller
 {
@@ -21,57 +22,21 @@ class pacienteController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
-
+    
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
-        $request->validate([
-        'codigoUsuario' => 'required|exists:users,codigoUsuario',
-        ]);
-
-        $paciente = new Paciente();
-        $paciente->codigoUsuario = $request->codigoUsuario;
-        $paciente->save();
-
-        return redirect('/pacientes')->with('success', 'Paciente registrado correctamente.');
+        
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+ public function exportarPDF()
     {
-        //
+        $pacientes = Paciente::with('usuario')->get();
+        $pdf = \PDF::loadView('reportes.pacientesreportes', compact('pacientes'));
+        return $pdf->download('reporte_pacientes.pdf');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+   
+  
 }

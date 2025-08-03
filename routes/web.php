@@ -11,7 +11,8 @@ use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\AdminCitaController;
 use App\Http\Controllers\EnfermedadController;
-
+use App\Http\Controllers\pacienteController;
+use App\Http\Controllers\MedicamentoController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,12 +34,14 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     //reportes 
     Route::get('/usuarios/pdf', [UserController::class, 'exportarPDF'])->name('usuarios.pdf');
     Route::get('/doctores/pdf', [DoctorController::class, 'exportarPDF'])->name('doctores.pdf');
-   
-    
+    Route::get('/enfermedades/pdf', [EnfermedadController::class, 'exportarPDF'])->name('enfermedades.pdf');
+    Route::get('/citas/pdf/{estado?}', [CitaController::class, 'exportarPDF'])->name('citas.pdf');
+    Route::get('/pacientes/pdf', [pacienteController::class, 'exportarPDF'])->name('pacientes.pdf');
+    Route::get('/especialidades/pdf', [EspecialidadController::class, 'exportarPDF'])->name('especialidades.pdf');
+    Route::get('/medicamentos/pdf', [MedicamentoController::class, 'exportarPDF'])->name('medicamentos.pdf');
 });
     Route::resource('/usuarios','App\Http\Controllers\UserController');
     Route::resource('/enfermedades','App\Http\Controllers\EnfermedadController');
-    Route::resource('enfermedad', App\Http\Controllers\EnfermedadController::class)->only(['index', 'create', 'store', 'edit', 'update']);
     Route::resource('/consultas','App\Http\Controllers\ConsultasController');
     Route::resource('/admin/medicamentos','App\Http\Controllers\MedicamentoController')->parameters(['medicamentos' => 'codigoMedicamento']);
     Route::put('/admin/medicamentos','App\Http\Controllers\MedicamentoController@update');

@@ -7,7 +7,7 @@
 @stop
 
 @section('content_header')
-    <h1>Listado de Enfermedades</h1>
+   <h1><span class="font-weight-bold">Listado de Enfermedades</span></h1>
 @stop
 
 @section('content')
@@ -16,6 +16,9 @@
             <button class="btn btn-primary" data-toggle="modal" data-target="#modalCrearEnfermedad">
                 <i class="fas fa-plus"></i> Registrar Nueva Enfermedad
             </button>
+             <a href="{{ route('enfermedades.pdf') }}" class="btn btn-secondary">
+            <i class="fas fa-file-pdf"></i> Exportar PDF 
+        </a>
         </div>
 
         <div class="card-body">
@@ -50,7 +53,7 @@
     <!-- Modal Crear -->
     <div class="modal fade" id="modalCrearEnfermedad" tabindex="-1" role="dialog" aria-labelledby="modalCrearEnfermedadLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form action="{{ route('enfermedad.store') }}" method="POST" class="modal-content">
+            <form action="{{ route('enfermedades.store') }}" method="POST" class="modal-content">
                 @csrf
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="modalCrearEnfermedadLabel">Registrar Nueva Enfermedad</h5>
@@ -78,7 +81,7 @@
     <!-- Modal Editar -->
     <div class="modal fade" id="modalEditarEnfermedad" tabindex="-1" role="dialog" aria-labelledby="modalEditarEnfermedadLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form method="POST" id="formEditarEnfermedad" class="modal-content">
+            <form method="POST" id="formEditarEnfermedad" action= "" class="modal-content">
                 @csrf
                 @method('PUT')
                 <div class="modal-header bg-warning text-white">
@@ -88,10 +91,13 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="codigoEnfermedad" id="codigoEnfermedadEditar">
+                    <input type="hidden" name="codigoEnfermedad" id="codigoEnfermedadEditar" old="{{ old('codigoEnfermedad') }}">
                     <div class="form-group">
                         <label for="nombreEditar">Nombre</label>
-                        <input type="text" name="nombre" id="nombreEditar" class="form-control" required>
+                        <input type="text" name="nombre" id="nombreEditar" old="{{ old('nombre') }}" class="form-control" required >
+                           @error('nombre')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -111,19 +117,43 @@
 
 <script>
    
-    $('.btnEditarEnfermedad').on('click', function () {
+
+    @if ($errors->any())
+    $(document).ready(function () {
+        @if (old('codigoEnfermedad'))
+            let id = "{{ old('codigoEnfermedad') }}";
+            $('#formEditarEnfermedad').attr('action', '/enfermedades/' + id);
+            $('#codigoEnfermedadEditar').val(id);
+            $('#nombreEditar').val("{{ old('nombre') }}");
+            $('#modalEditarEnfermedad').modal('show');
+        @else
+            $('#modalCrearEnfermedad').modal('show');
+        @endif
+    });
+@endif
+
+       $(document).on('click', '.btnEditarEnfermedad', function () {
         let id = $(this).data('id');
         let nombre = $(this).data('nombre');
 
         $('#codigoEnfermedadEditar').val(id);
         $('#nombreEditar').val(nombre);
 
-        $('#formEditarEnfermedad').attr('action', '/enfermedad/' + id);
+        $('#formEditarEnfermedad').attr('action', '/enfermedades/' + id);
+    });
+
+ $('#modalCrearEnfermedad').on('show.bs.modal', function () {
+        $('#modalEditarEnfermedad input[name="nombre"]').val('');
+        $('#modalEditarEnfermedad small.text-danger').remove();
+        $('#formEditarEnfermedad').attr('action', '');
+    });
+
+   
+    $('#modalEditarEnfermedad').on('show.bs.modal', function () {
+        $('#modalCrearEnfermedad input[name="nombre"]').val('');
+        $('#modalCrearEnfermedad small.text-danger').remove();
     });
 
 
-     @if ($errors->any())
-        $('#modalCrearEnfermedad').modal('show');
-    @endif
 </script>
 @stop

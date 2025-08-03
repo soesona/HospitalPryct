@@ -129,4 +129,11 @@ class MedicamentoController extends Controller
             return redirect('/admin/medicamentos')->with('error', 'Error al cambiar el estado del medicamento.');
         }
     }
+
+    public function exportarPDF()
+    {
+        $medicamentos = medicamento::all();
+        $pdf = \PDF::loadView('reportes.medicamentosreportes', compact('medicamentos'));
+        return $pdf->download('reporte_medicamentos.pdf');
+    }
 }

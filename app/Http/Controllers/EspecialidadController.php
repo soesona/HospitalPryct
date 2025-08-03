@@ -133,4 +133,11 @@ class EspecialidadController extends Controller
             return redirect()->back()->with('error', 'Error al actualizar la especialidad.');
         }
     }
+
+    public function exportarPDF()
+    {
+        $especialidades = Especialidad::all();
+        $pdf = \PDF::loadView('reportes.especialidadesreportes', compact('especialidades'));
+        return $pdf->download('reporte_especialidades.pdf');
+    }
 }

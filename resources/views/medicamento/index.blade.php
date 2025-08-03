@@ -9,7 +9,7 @@
 @stop
 
 @section('content_header')
-    <h1 class="mb-3">Listado de Medicamentos</h1>
+    <h1><span class="font-weight-bold">Listado de Medicamentos</span></h1>
 @stop
 
 @section('content')
@@ -18,6 +18,10 @@
             <button class="btn btn-primary" data-toggle="modal" data-target="#modalCrear">
                 <i class="fas fa-plus"></i> Registrar Nuevo Medicamento
             </button>
+
+            <a href="{{ route('medicamentos.pdf') }}" class="btn btn-secondary">
+    <i class="fas fa-file-pdf"></i> Exportar PDF
+</a>
         </div>
 
         <div class="card-body">

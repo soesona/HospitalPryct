@@ -8,7 +8,7 @@
 @stop
 
 @section('content_header')
-    <h1>Doctores registrados</h1>
+     <h1><span class="font-weight-bold">Listado de Doctores</span></h1>
 @stop
 
 @section('content')
