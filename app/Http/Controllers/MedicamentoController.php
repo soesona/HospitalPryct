@@ -13,54 +13,117 @@ class MedicamentoController extends Controller
         return view('medicamento.index')->with('listaMedicamentos', $datosMedicamentos);
     }
 
+    
     public function store(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:100',
-            'descripcion' => 'required|string',
-            'stock' => 'required|integer|min:0',
-            'fechaVencimiento' => 'required|date',
-        ]);
+        try {
+            $request->validate([
+                'nombre' => [
+                    'required',
+                    'string',
+                    'max:100',
+                    function ($attribute, $value, $fail) {
+                        $existe = medicamento::whereRaw('LOWER(nombre) = ?', [strtolower(trim($value))])->exists();
+                        
+                        if ($existe) {
+                            $fail('Ya existe un medicamento con este nombre.');
+                        }
+                    }
+                ],
+                'descripcion' => 'required|string|max:500',
+                'stock' => 'required|integer|min:0',
+                'fechaVencimiento' => 'required|date|after:today',
+            ]);
 
-        $nuevo = new medicamento();
-        $nuevo->nombre = strtoupper($request->nombre);
-        $nuevo->descripcion = strtoupper($request->descripcion);
-        $nuevo->stock = $request->stock;
-        $nuevo->fechaVencimiento = $request->fechaVencimiento;
-        $nuevo->save();
+            $nuevo = new medicamento();
+            $nuevo->nombre = strtoupper(trim($request->nombre));
+            $nuevo->descripcion = strtoupper(trim($request->descripcion));
+            $nuevo->stock = $request->stock;
+            $nuevo->fechaVencimiento = $request->fechaVencimiento;
+            $nuevo->activo = true;
+            $nuevo->save();
 
-        return redirect('/admin/medicamentos');
+            return response()->json([
+                'success' => true,
+                'message' => 'Medicamento registrado correctamente'
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error interno: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
+    
     public function update(Request $request)
     {
-    $request->validate([
-        'codigoMedicamentou' => 'required|exists:medicamentos,codigoMedicamento',
-        'nombreu' => 'required|string|max:100',
-        'descripcionu' => 'required|string',
-        'stocku' => 'required|integer|min:0',
-        'fechaVencimientou' => 'required|date',
-    ]);
+        try {
+            $request->validate([
+                'codigoMedicamentou' => 'required|exists:medicamentos,codigoMedicamento',
+                'nombreu' => [
+                    'required',
+                    'string',
+                    'max:100',
+                    function ($attribute, $value, $fail) use ($request) {
+                        $existe = medicamento::whereRaw('LOWER(nombre) = ?', [strtolower(trim($value))])
+                                            ->where('codigoMedicamento', '!=', $request->codigoMedicamentou)
+                                            ->exists();
+                        
+                        if ($existe) {
+                            $fail('Ya existe otro medicamento con este nombre.');
+                        }
+                    }
+                ],
+                'descripcionu' => 'required|string|max:500',
+                'stocku' => 'required|integer|min:0',
+                'fechaVencimientou' => 'required|date',
+            ]);
 
-    $medicamento = medicamento::find($request->get('codigoMedicamentou'));
+            $medicamento = medicamento::findOrFail($request->codigoMedicamentou);
 
-    $medicamento->nombre = strtoupper($request->get('nombreu'));
-    $medicamento->descripcion = strtoupper($request->get('descripcionu'));
-    $medicamento->stock = $request->get('stocku');
-    $medicamento->fechaVencimiento = $request->get('fechaVencimientou');
-    $medicamento->save();
+            $medicamento->nombre = strtoupper(trim($request->nombreu));
+            $medicamento->descripcion = strtoupper(trim($request->descripcionu));
+            $medicamento->stock = $request->stocku;
+            $medicamento->fechaVencimiento = $request->fechaVencimientou;
+            $medicamento->save();
 
-    return redirect('/admin/medicamentos');
+            return response()->json([
+                'success' => true,
+                'message' => 'Medicamento actualizado correctamente'
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error interno: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function cambiarEstado($codigoMedicamento)
     {
-    $datosMedicamentos = medicamento::findOrFail($codigoMedicamento);
-    $datosMedicamentos->activo = !$datosMedicamentos->activo;
-    $datosMedicamentos->save();
+        try {
+            $medicamento = medicamento::findOrFail($codigoMedicamento);
+            $medicamento->activo = !$medicamento->activo;
+            $medicamento->save();
 
-    return redirect('/admin/medicamentos')->with('success', 'Estado del medicamento actualizado correctamente.');
+            return redirect('/admin/medicamentos')->with('success', 'Estado del medicamento actualizado correctamente.');
+        } catch (\Exception $e) {
+            return redirect('/admin/medicamentos')->with('error', 'Error al cambiar el estado del medicamento.');
+        }
     }
-
-    
 }

@@ -2,6 +2,12 @@
 
 @section('title', 'Medicamentos')
 
+@section('css')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+<meta name="csrf-token" content="{{ csrf_token() }}">
+@stop
+
 @section('content_header')
     <h1 class="mb-3">Listado de Medicamentos</h1>
 @stop
@@ -15,7 +21,7 @@
         </div>
 
         <div class="card-body">
-            <table class="table table-bordered table-hover table-striped">
+            <table id="tablaMedicamentos" class="table table-bordered table-hover table-striped">
                 <thead class="thead-dark">
                     <tr>
                         <th>Código</th>
@@ -65,9 +71,10 @@
         </div>
     </div>
 
+    <!-- Modal Crear Medicamento -->
     <div class="modal fade" id="modalCrear" tabindex="-1">
         <div class="modal-dialog">
-            <form action="/admin/medicamentos" method="POST" class="modal-content">
+            <form id="formCrearMedicamento" class="modal-content">
                 @csrf
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title">Registrar Medicamento</h5>
@@ -75,34 +82,34 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Nombre</label>
-                        <input type="text" name="nombre" class="form-control" required>
+                        <label>Nombre <span class="text-danger">*</span></label>
+                        <input type="text" name="nombre" class="form-control" required maxlength="100">
                     </div>
                     <div class="form-group">
-                        <label>Descripción</label>
-                        <textarea name="descripcion" class="form-control" required></textarea>
+                        <label>Descripción <span class="text-danger">*</span></label>
+                        <textarea name="descripcion" class="form-control" required maxlength="500" rows="3"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Stock</label>
-                        <input type="number" name="stock" class="form-control" required>
+                        <label>Stock <span class="text-danger">*</span></label>
+                        <input type="number" name="stock" class="form-control" min="0" required>
                     </div>
                     <div class="form-group">
-                        <label>Fecha de Vencimiento</label>
+                        <label>Fecha de Vencimiento <span class="text-danger">*</span></label>
                         <input type="date" name="fechaVencimiento" class="form-control" required>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-success">Registrar</button>
-                    <button class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Registrar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </form>
         </div>
     </div>
 
-   
+    <!-- Modal Editar Medicamento -->
     <div class="modal fade" id="mEditarMedicamento" tabindex="-1">
         <div class="modal-dialog">
-            <form action="/admin/medicamentos" method="POST" class="modal-content" id="miFormU">
+            <form id="formEditarMedicamento" class="modal-content">
                 @csrf
                 @method('PUT')
                 <div class="modal-header bg-success text-white">
@@ -115,53 +122,217 @@
                         <input type="text" id="codigoMedicamentou" name="codigoMedicamentou" class="form-control" readonly>
                     </div>
                     <div class="form-group">
-                        <label>Nombre</label>
-                        <input type="text" id="nombreu" name="nombreu" class="form-control">
+                        <label>Nombre <span class="text-danger">*</span></label>
+                        <input type="text" id="nombreu" name="nombreu" class="form-control" required maxlength="100">
                     </div>
                     <div class="form-group">
-                        <label>Descripción</label>
-                        <input type="text" id="descripcionu" name="descripcionu" class="form-control">
+                        <label>Descripción <span class="text-danger">*</span></label>
+                        <input type="text" id="descripcionu" name="descripcionu" class="form-control" required maxlength="500">
                     </div>
                     <div class="form-group">
-                        <label>Stock</label>
-                        <input type="number" id="stocku" name="stocku" class="form-control">
+                        <label>Stock <span class="text-danger">*</span></label>
+                        <input type="number" id="stocku" name="stocku" class="form-control" min="0" required>
                     </div>
                     <div class="form-group">
-                        <label>Fecha de Vencimiento</label>
-                        <input type="date" id="fechaVencimientou" name="fechaVencimientou" class="form-control">
+                        <label>Fecha de Vencimiento <span class="text-danger">*</span></label>
+                        <input type="date" id="fechaVencimientou" name="fechaVencimientou" class="form-control" required>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-success" type="submit">Guardar</button>
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 </div>
             </form>
         </div>
     </div>
 
-    
+    <!-- Modal de Notificación de Éxito -->
+    <div class="modal fade" id="modalExito" tabindex="-1" role="dialog" aria-labelledby="modalExitoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-body text-center p-4">
+                    <div class="mb-3">
+                        <div class="rounded-circle bg-success d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="fas fa-check text-white" style="font-size: 24px;"></i>
+                        </div>
+                    </div>
+                    <h5 class="modal-title font-weight-bold text-dark mb-2" id="modalExitoTitulo">Éxito</h5>
+                    <p class="text-muted mb-0" id="modalExitoMensaje">Operación completada.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Notificación de Error -->
+    <div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="modalErrorLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-body text-center p-4">
+                    <div class="mb-3">
+                        <div class="rounded-circle bg-danger d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="fas fa-times text-white" style="font-size: 24px;"></i>
+                        </div>
+                    </div>
+                    <h5 class="modal-title font-weight-bold text-dark mb-2" id="modalErrorTitulo">Error</h5>
+                    <p class="text-muted mb-0" id="modalErrorMensaje">Ha ocurrido un error.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @stop
 
 @section('js')
-<script>
-    document.querySelectorAll('.ejecutar').forEach(btn => {
-        btn.addEventListener('click', function () {
-            document.getElementById('codigoMedicamentou').value = this.dataset.codigomed;
-            document.getElementById('nombreu').value = this.dataset.nombre;
-            document.getElementById('descripcionu').value = this.dataset.descripcion;
-            document.getElementById('stocku').value = this.dataset.stock;
-            document.getElementById('fechaVencimientou').value = this.dataset.fechav;
-        });
-    });
-</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
 
 <script>
-    function confirmarCambioEstado(codigo, accion) {
+$(document).ready(function(){
+
+    
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    
+    const hoy = new Date().toISOString().split('T')[0];
+    $('input[name="fechaVencimiento"]').attr('min', hoy);
+    $('input[name="fechaVencimientou"]').attr('min', hoy);
+
+    // Funciones de modales
+    function mostrarExito(titulo, mensaje) {
+        $('#modalExitoTitulo').text(titulo);
+        $('#modalExitoMensaje').text(mensaje);
+        $('#modalExito').modal('show');
+        
+        setTimeout(function(){
+            $('#modalExito').modal('hide');
+        }, 2500);
+    }
+
+    function mostrarError(titulo, mensaje) {
+        $('#modalErrorTitulo').text(titulo);
+        $('#modalErrorMensaje').text(mensaje);
+        $('#modalError').modal('show');
+        
+        setTimeout(function(){
+            $('#modalError').modal('hide');
+        }, 3500);
+    }
+
+    function procesarErroresValidacion(xhr) {
+        let mensaje = 'Error inesperado';
+        
+        if (xhr.responseJSON) {
+            if (xhr.responseJSON.errors) {
+                const errores = xhr.responseJSON.errors;
+                const primerError = Object.values(errores)[0];
+                mensaje = Array.isArray(primerError) ? primerError[0] : primerError;
+            }
+            else if (xhr.responseJSON.message) {
+                mensaje = xhr.responseJSON.message;
+            }
+        }
+        
+        return mensaje;
+    }
+
+    
+    $('#formCrearMedicamento').submit(function(e){
+        e.preventDefault();
+
+        const submitBtn = $(this).find('button[type="submit"]');
+        const originalText = submitBtn.text();
+        submitBtn.prop('disabled', true).text('Registrando...');
+
+        $.ajax({
+            url: '/admin/medicamentos', 
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function(response){
+                console.log('Medicamento creado:', response);
+                $('#modalCrear').modal('hide');
+                mostrarExito('Medicamento registrado', 'El medicamento fue registrado correctamente.');
+                
+                setTimeout(function() {
+                    window.location.reload();
+                }, 1500);
+            },
+            error: function(xhr){
+                console.error('Error creando medicamento:', xhr);
+                console.error('Response:', xhr.responseText);
+                const mensajeError = procesarErroresValidacion(xhr);
+                mostrarError('Error de validación', mensajeError);
+            },
+            complete: function() {
+                submitBtn.prop('disabled', false).text(originalText);
+            }
+        });
+    });
+
+    //  EDITAR MEDICAMENTO 
+    $('#formEditarMedicamento').submit(function(e){
+        e.preventDefault();
+
+        const submitBtn = $(this).find('button[type="submit"]');
+        const originalText = submitBtn.text();
+        submitBtn.prop('disabled', true).text('Guardando...');
+
+        $.ajax({
+            url: '/admin/medicamentos', 
+            method: 'PUT',
+            data: $(this).serialize(),
+            success: function(response){
+                console.log('Medicamento actualizado:', response);
+                $('#mEditarMedicamento').modal('hide');
+                mostrarExito('Medicamento actualizado', 'Los cambios fueron guardados correctamente.');
+                
+                setTimeout(function() {
+                    window.location.reload();
+                }, 1500);
+            },
+            error: function(xhr){
+                console.error('Error actualizando medicamento:', xhr);
+                console.error('Response:', xhr.responseText);
+                const mensajeError = procesarErroresValidacion(xhr);
+                mostrarError('Error de validación', mensajeError);
+            },
+            complete: function() {
+                submitBtn.prop('disabled', false).text(originalText);
+            }
+        });
+    });
+
+    // Event listeners para editar medicamento
+    $(document).on('click', '.ejecutar', function() {
+        $('#codigoMedicamentou').val($(this).data('codigomed'));
+        $('#nombreu').val($(this).data('nombre'));
+        $('#descripcionu').val($(this).data('descripcion'));
+        $('#stocku').val($(this).data('stock'));
+        $('#fechaVencimientou').val($(this).data('fechav'));
+    });
+
+    // Función para confirmar cambio de estado
+    window.confirmarCambioEstado = function(codigo, accion) {
         if (confirm(`¿Estás seguro que deseas ${accion} este medicamento?`)) {
             document.getElementById(`estado-form-${codigo}`).submit();
         }
-    }
+    };
+
+    // Limpiar campos al cerrar modal
+    $('#modalCrear').on('hidden.bs.modal', function () {
+        $('#formCrearMedicamento')[0].reset();
+        $('#formCrearMedicamento .form-control').removeClass('is-invalid');
+    });
+
+    $('#mEditarMedicamento').on('hidden.bs.modal', function () {
+        $('#formEditarMedicamento .form-control').removeClass('is-invalid');
+    });
+});
 </script>
+@vite('resources/js/app.js')
 
 @stop
