@@ -17,38 +17,45 @@ class AdminCitaController extends Controller
      * Mostrar la vista principal de gestión de citas para administradores
      */
     public function index()
-    {
-        // Obtener todas las citas con sus relaciones (no solo pendientes)
-        $citas = Cita::with(['doctor.user', 'doctor.especialidad', 'paciente.usuario'])
-            ->orderBy('fechaCita', 'desc')
-            ->orderBy('horaInicio', 'desc')
-            ->get();
+{
+    // Obtener solo citas pendientes, confirmadas y canceladas (no finalizadas)
+    $citas = Cita::with(['doctor.user', 'doctor.especialidad', 'paciente.usuario'])
+        ->whereIn('estado', ['pendiente', 'confirmada', 'cancelada'])
+        ->orderByRaw("CASE 
+            WHEN estado = 'pendiente' THEN 1 
+            WHEN estado = 'confirmada' THEN 2 
+            WHEN estado = 'cancelada' THEN 3 
+            ELSE 4 END")
+        ->orderBy('fechaCita', 'asc')
+        ->orderBy('horaInicio', 'asc')
+        ->get();
 
-        $especialidades = Especialidad::all();
-        
-        return view('citas.admin', compact('citas', 'especialidades'));
-    }
+    $especialidades = Especialidad::all();
+    
+    return view('citas.admin', compact('citas', 'especialidades'));
+}
 
     /**
      * Buscar pacientes por nombre (AJAX)
      */
     public function buscarPacientes(Request $request)
-    {
-        $query = $request->get('q');
-        
-        if (strlen($query) < 2) {
-            return response()->json([]);
-        }
-
-        $pacientes = Paciente::with('usuario')
-            ->whereHas('usuario', function($q) use ($query) {
-                $q->where('nombreCompleto', 'LIKE', '%' . $query . '%');
-            })
-            ->limit(10)
-            ->get();
-
-        return response()->json($pacientes);
+{
+    $query = $request->get('q');
+    
+    // Cambié la validación para números de identidad
+    if (strlen($query) < 4) {
+        return response()->json([]);
     }
+
+    $pacientes = Paciente::with('usuario')
+        ->whereHas('usuario', function($q) use ($query) {
+            $q->where('identidad', 'LIKE', '%' . $query . '%');
+        })
+        ->limit(10)
+        ->get();
+
+    return response()->json($pacientes);
+}
 
     /**
      * Obtener doctores por especialidad excluyendo al paciente si es doctor (AJAX)

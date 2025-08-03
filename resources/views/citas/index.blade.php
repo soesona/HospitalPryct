@@ -1,4 +1,4 @@
-{{-- VISTA PARA QUE LOS PACIENTES AGENDEN SUS CITAS --}}
+{{-- VISTA PARA QUE LOS PACIENTES AGENDEN SUS CITAS Y VEAN TODAS SUS CITAS ACTIVAS --}}
 
 @extends('adminlte::page')
 
@@ -31,6 +31,12 @@
     border: 1px solid #ffeaa7;
     color: #856404;
 }
+.cita-card {
+    transition: transform 0.2s;
+}
+.cita-card:hover {
+    transform: translateY(-2px);
+}
 </style>
 @stop
 
@@ -39,74 +45,159 @@
     <h2></h2>
 
     <button class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalAgendarCita">
-        Agendar Nueva Cita
+        <i class="fas fa-plus mr-2"></i>Agendar Nueva Cita
     </button>
 
-            @if ($errors->any())
-            <div class="d-none" id="validation-errors">
-                @foreach ($errors->all() as $error)
-                    <span data-error="{{ $error }}"></span>
-                @endforeach
-            </div>
-        @endif
+    @if ($errors->any())
+        <div class="d-none" id="validation-errors">
+            @foreach ($errors->all() as $error)
+                <span data-error="{{ $error }}"></span>
+            @endforeach
+        </div>
+    @endif
 
-        @if (session('success'))
-            <div class="d-none" id="success-message" data-message="{{ session('success') }}"></div>
-        @endif
+    @if (session('success'))
+        <div class="d-none" id="success-message" data-message="{{ session('success') }}"></div>
+    @endif
 
+    @if (session('error'))
+        <div class="d-none" id="error-message" data-message="{{ session('error') }}"></div>
+    @endif
 
-        @if (session('error'))
-            <div class="d-none" id="error-message" data-message="{{ session('error') }}"></div>
-        @endif
-
+    {{-- Mostrar todas las citas activas del paciente --}}
     @if ($citas->isNotEmpty())
-    @php $cita = $citas->first(); @endphp
-
-    <div class="card shadow mb-4">
-        <div class="card-header bg-info text-white">
-            <h5 class="mb-0">Próxima Cita</h5>
-        </div>
-        <div class="card-body">
-            <div class="row mb-2">
-                <div class="col-md-6">
-                    <strong>Doctor:</strong> {{ ucwords(strtolower($cita->doctor->user->nombreCompleto ?? 'N/A')) }}
+        
+        {{-- Citas Pendientes --}}
+        @if ($citasPendientes->isNotEmpty())
+            <div class="card shadow mb-4">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clock mr-2"></i>
+                        Citas Pendientes ({{ $citasPendientes->count() }})
+                    </h5>
+                    <small>Estas citas están esperando confirmación </small>
                 </div>
-                <div class="col-md-6">
-                    <strong>Estado:</strong>
-                    <span class="badge badge-{{ $cita->estado == 'pendiente' ? 'warning' : ($cita->estado == 'confirmada' ? 'success' : 'secondary') }}">
-                        {{ ucfirst($cita->estado) }}
-                    </span>
+                <div class="card-body">
+                    <div class="row">
+                        @foreach ($citasPendientes as $cita)
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-left-warning cita-card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <h6 class="text-primary mb-0">
+                                                {{ ucwords(strtolower($cita->doctor->user->nombreCompleto ?? 'N/A')) }}
+                                            </h6>
+                                            <span class="badge badge-warning">Pendiente</span>
+                                        </div>
+                                        
+                                        <p class="text-muted mb-2">
+                                            <i class="fas fa-stethoscope mr-1"></i>
+                                            {{ ucfirst(strtolower($cita->doctor->especialidad->nombre ?? 'No definida')) }}
+                                        </p>
+                                        
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-calendar mr-1"></i>
+                                                    {{ \Carbon\Carbon::parse($cita->fechaCita)->format('d/m/Y') }}
+                                                </small>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-clock mr-1"></i>
+                                                    {{ \Carbon\Carbon::parse($cita->horaInicio)->format('H:i') }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-2">
+                                            <small class="text-muted">
+                                                <i class="fas fa-hourglass-half mr-1"></i>
+                                                Duración: 30 minutos
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
+        @endif
 
-            <div class="row mb-2">
-                <div class="col-md-6">
-                    <strong>Hora:</strong> {{ \Carbon\Carbon::parse($cita->horaInicio)->format('H:i') }}
+        {{-- Citas Confirmadas --}}
+        @if ($citasConfirmadas->isNotEmpty())
+            <div class="card shadow mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        Citas Confirmadas ({{ $citasConfirmadas->count() }})
+                    </h5>
+                    <small>Estas citas han sido confirmadas </small>
                 </div>
-                <div class="col-md-6">
-                    <strong>Fecha:</strong> {{ \Carbon\Carbon::parse($cita->fechaCita)->format('d/m/Y') }}
+                <div class="card-body">
+                    <div class="row">
+                        @foreach ($citasConfirmadas as $cita)
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-left-success cita-card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <h6 class="text-primary mb-0">
+                                                {{ ucwords(strtolower($cita->doctor->user->nombreCompleto ?? 'N/A')) }}
+                                            </h6>
+                                            <span class="badge badge-success">Confirmada</span>
+                                        </div>
+                                        
+                                        <p class="text-muted mb-2">
+                                            <i class="fas fa-stethoscope mr-1"></i>
+                                            {{ ucfirst(strtolower($cita->doctor->especialidad->nombre ?? 'No definida')) }}
+                                        </p>
+                                        
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-calendar mr-1"></i>
+                                                    {{ \Carbon\Carbon::parse($cita->fechaCita)->format('d/m/Y') }}
+                                                </small>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-clock mr-1"></i>
+                                                    {{ \Carbon\Carbon::parse($cita->horaInicio)->format('H:i') }}
+                                                </small>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-2">
+                                            <small class="text-success">
+                                                <i class="fas fa-check mr-1"></i>
+                                                ¡Cita confirmada! No olvides asistir
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
+        @endif
 
-            <div class="row">
-                <div class="col-md-6">
-                    <strong>Especialidad:</strong> {{ ucfirst(strtolower($cita->doctor->especialidad->nombre ?? 'No definida')) }}
-                </div>
-                <div class="col-md-6">
-                    <strong>Duración:</strong> 30 minutos
+    @else
+        {{-- No tiene citas activas --}}
+        <div class="card shadow mb-4 border-left-info">
+            <div class="card-body text-center">
+                <div class="py-4">
+                    <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No tienes citas activas</h5>
+                    <p class="mb-3 text-muted">
+                        Puedes agendar una nueva cita cuando lo desees.<br>
+                        <small>Las citas finalizadas se encuentran en tu historial clínico.</small>
+                    </p>
                 </div>
             </div>
         </div>
-    </div>
-@else
-    <div class="card shadow mb-4 border-left-warning">
-        <div class="card-body text-center">
-            <h5 class="text-warning">No tienes citas pendientes</h5>
-            <p class="mb-0">Puedes agendar una nueva cita cuando lo desees.</p>
-        </div>
-    </div>
-@endif
-
+    @endif
 
 </div>
 
@@ -185,7 +276,6 @@
     </div>
   </div>
 </div>
-
 
 @endsection
 

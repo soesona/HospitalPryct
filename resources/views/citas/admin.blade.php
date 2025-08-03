@@ -121,7 +121,7 @@
                         </thead>
                         <tbody>
                             @foreach ($citas as $cita)
-                                <tr>
+                                    <tr>
                                     <td>{{ $cita->paciente->usuario->identidad ?? 'N/A' }}</td>
                                     <td>{{ ucwords(strtolower($cita->paciente->usuario->nombreCompleto ?? 'N/A')) }}</td>
                                     <td>{{ ucwords(strtolower($cita->doctor->user->nombreCompleto ?? 'N/A')) }}</td>
@@ -134,24 +134,23 @@
                                         </span>
                                     </td>
                                     <td>
-                                    @if ($cita->estado !== 'cancelada')
-                                        <button class="btn btn-sm btn-info"
-                                            onclick="cambiarEstadoCita(
-                                                {{ $cita->codigoCita }},
-                                                '{{ $cita->estado }}',
-                                                '{{ ucwords(strtolower($cita->paciente->usuario->nombreCompleto ?? 'N/A')) }}',
-                                                '{{ \Carbon\Carbon::parse($cita->fechaCita)->format('d/m/Y') }}',
-                                                '{{ \Carbon\Carbon::parse($cita->horaInicio)->format('H:i') }}'
-                                            )"
-                                            title="Cambiar Estado">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-
-                                    @else
-                                        <span class="text-muted" title="No se puede editar una cita cancelada">
-                                            <i class="fas fa-ban"></i> No editable
-                                        </span>
-                                    @endif
+                                        @if ($cita->estado == 'pendiente')
+                                            <button class="btn btn-sm btn-info"
+                                                onclick="cambiarEstadoCita(
+                                                    {{ $cita->codigoCita }},
+                                                    '{{ $cita->estado }}',
+                                                    '{{ ucwords(strtolower($cita->paciente->usuario->nombreCompleto ?? 'N/A')) }}',
+                                                    '{{ \Carbon\Carbon::parse($cita->fechaCita)->format('d/m/Y') }}',
+                                                    '{{ \Carbon\Carbon::parse($cita->horaInicio)->format('H:i') }}'
+                                                )"
+                                                title="Cambiar Estado">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        @else
+                                            <span class="text-muted" title="Solo se pueden editar citas pendientes">
+                                                <i class="fas fa-lock"></i> No editable
+                                            </span>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -188,7 +187,7 @@
                     <div class="form-group form-group-search">
                         <label for="buscarPaciente">Paciente:</label>
                         <input type="text" class="form-control" id="buscarPaciente" 
-                               placeholder="Escriba el nombre del paciente..." autocomplete="off">
+                               placeholder="Escriba la identidad del paciente..." autocomplete="off">
                         <input type="hidden" name="codigoPaciente" id="codigoPaciente" required>
                         <div class="search-results-container" id="resultadosBusqueda"></div>
                         <div id="pacienteSeleccionado" class="alert-custom alert-info-custom" style="display: none;"></div>
@@ -305,7 +304,7 @@
                 <p class="mb-0"><strong>Estado actual:</strong> <span id="estadoActualText" ></span></p>
                 <p class="mb-0"><strong>Nuevo estado:</strong> <span id="nuevoEstadoText" ></span></p>
                 <div class="mt-3">
-                    <small class="text-muted">Si la cita es cancelada no se podrá reprogramar.</small>
+                    <small class="text-muted">Al cambiar el estado, esta cita ya no podrá ser editada nuevamente.</small>
                 </div>
             </div>
 
@@ -456,72 +455,95 @@ $(document).ready(function() {
         return texto.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
     }
 
-    // Búsqueda de pacientes
-    $('#buscarPaciente').on('input', function() {
-        const query = $(this).val().trim();
-        
-        if (searchTimeout) {
-            clearTimeout(searchTimeout);
-        }
+    // Búsqueda de pacientes por identidad
+$('#buscarPaciente').on('input', function() {
+    const query = $(this).val().trim();
+    
+    if (searchTimeout) {
+        clearTimeout(searchTimeout);
+    }
 
-        if (query.length < 2) {
-            $('#resultadosBusqueda').hide().empty();
-            pacienteSeleccionadoId = null;
-            $('#codigoPaciente').val('');
-            $('#pacienteSeleccionado').hide();
-            return;
-        }
+    
+    if (query.length < 4) {
+        $('#resultadosBusqueda').hide().empty();
+        pacienteSeleccionadoId = null;
+        $('#codigoPaciente').val('');
+        $('#pacienteSeleccionado').hide();
+        return;
+    }
 
-        searchTimeout = setTimeout(() => {
-            $.ajax({
-                url: '/admin/buscar-pacientes',
-                method: 'GET',
-                data: { q: query },
-                success: function(data) {
-                    console.log('Resultados búsqueda:', data);
-                    const container = $('#resultadosBusqueda');
-                    container.empty();
+    searchTimeout = setTimeout(() => {
+        $.ajax({
+            url: '/admin/buscar-pacientes',
+            method: 'GET',
+            data: { q: query },
+            success: function(data) {
+                console.log('Resultados búsqueda:', data);
+                const container = $('#resultadosBusqueda');
+                container.empty();
 
-                    if (data.length === 0) {
-                        container.html('<div class="patient-search-result text-muted">No se encontraron pacientes</div>');
-                    } else {
-                        data.forEach(paciente => {
-                            const nombre = capitalizarTexto(paciente.usuario.nombreCompleto);
-                            const elemento = `
-                                <div class="patient-search-result" data-id="${paciente.codigoPaciente}" data-nombre="${nombre}">
-                                    <strong>${nombre}</strong><br>
-                                    <small class="text-muted">Código: ${paciente.codigoPaciente}</small>
+                if (data.length === 0) {
+                    container.html('<div class="patient-search-result text-muted"><i class="fas fa-search"></i> No se encontraron pacientes con esa identidad</div>');
+                } else {
+                    data.forEach(paciente => {
+                        const nombre = capitalizarTexto(paciente.usuario.nombreCompleto);
+                        const identidad = paciente.usuario.identidad;
+                        
+                        const elemento = `
+                            <div class="patient-search-result" data-id="${paciente.codigoPaciente}" data-nombre="${nombre}" data-identidad="${identidad}">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong class="text-primary">${nombre}</strong><br>
+                                        <small class="text-muted">
+                                            <i class="fas fa-id-card mr-1"></i>Identidad: ${identidad}
+                                        </small><br>
+                                        <small class="text-muted">
+                                            <i class="fas fa-hashtag mr-1"></i>Código: ${paciente.codigoPaciente}
+                                        </small>
+                                    </div>
+                                    <div class="text-right">
+                                        <i class="fas fa-user-plus text-success"></i>
+                                    </div>
                                 </div>
-                            `;
-                            container.append(elemento);
-                        });
-                    }
-                    
-                    container.show();
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error en búsqueda:', error);
-                    $('#resultadosBusqueda').html('<div class="patient-search-result text-danger">Error al buscar pacientes</div>').show();
+                            </div>
+                        `;
+                        container.append(elemento);
+                    });
                 }
-            });
-        }, 300);
-    });
+                
+                container.show();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error en búsqueda:', error);
+                $('#resultadosBusqueda').html('<div class="patient-search-result text-danger"><i class="fas fa-exclamation-triangle"></i> Error al buscar pacientes</div>').show();
+            }
+        });
+    }, 300);
+});
 
     // Seleccionar paciente de los resultados
-    $(document).on('click', '.patient-search-result[data-id]', function() {
-        const id = $(this).data('id');
-        const nombre = $(this).data('nombre');
-        
-        pacienteSeleccionadoId = id;
-        $('#codigoPaciente').val(id);
-        $('#buscarPaciente').val(nombre);
-        $('#resultadosBusqueda').hide().empty();
-        
-        showInfo($('#pacienteSeleccionado'), `Paciente seleccionado: ${nombre}`, 'info');
-        
-        // Limpiar campos dependientes del paciente
-        clearDependentFields('especialidad');
-    });
+$(document).on('click', '.patient-search-result[data-id]', function() {
+    const id = $(this).data('id');
+    const nombre = $(this).data('nombre');
+    const identidad = $(this).data('identidad');
+    
+    pacienteSeleccionadoId = id;
+    $('#codigoPaciente').val(id);
+    
+    // Mostrar la identidad en el campo de búsqueda en lugar del nombre
+    // ya que el usuario buscó por identidad
+    $('#buscarPaciente').val(identidad);
+    $('#resultadosBusqueda').hide().empty();
+    
+    // Mensaje más informativo mostrando nombre e identidad
+    showInfo($('#pacienteSeleccionado'), 
+        `Paciente seleccionado: <strong>${nombre}</strong> (ID: ${identidad})`, 
+        'info'
+    );
+    
+    // Limpiar campos dependientes del paciente
+    clearDependentFields('especialidad');
+});
 
     // Ocultar resultados al hacer clic fuera
     $(document).on('click', function(e) {

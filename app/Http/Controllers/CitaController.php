@@ -12,22 +12,34 @@ use Carbon\Carbon;
 class CitaController extends Controller
 {
     public function index()
-    {
-        $usuario = Auth::user();
-        $paciente = $usuario->paciente;
+{
+    $usuario = Auth::user();
+    $paciente = $usuario->paciente;
 
-        if (!$paciente) {
-            $citas = collect(); // colección vacía
-        } else {
-            $citas = Cita::with(['doctor.user', 'paciente'])
+    if (!$paciente) {
+        $citas = collect(); // colección vacía
+    } else {
+        // Obtener todas las citas pendientes y confirmadas (no finalizadas/canceladas)
+        $citas = Cita::with(['doctor.user', 'doctor.especialidad', 'paciente'])
             ->where('codigoPaciente', $paciente->codigoPaciente)
-            ->orderBy('fechaCita', 'desc')
-            ->orderBy('horaInicio', 'desc')
+            ->whereIn('estado', ['pendiente', 'confirmada'])
+            ->orderByRaw("CASE 
+                WHEN estado = 'pendiente' THEN 1 
+                WHEN estado = 'confirmada' THEN 2 
+                ELSE 3 END")
+            ->orderBy('fechaCita', 'asc')
+            ->orderBy('horaInicio', 'asc')
             ->get();
-        }
-        $especialidades = Especialidad::all();
-        return view('citas.index', compact('citas', 'especialidades'));
     }
+    
+    // Agrupar las citas por estado
+    $citasPendientes = $citas->where('estado', 'pendiente');
+    $citasConfirmadas = $citas->where('estado', 'confirmada');
+    
+    $especialidades = Especialidad::all();
+    
+    return view('citas.index', compact('citas', 'citasPendientes', 'citasConfirmadas', 'especialidades'));
+}
 
     public function create()
     {
