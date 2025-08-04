@@ -299,17 +299,10 @@ return [
     */
 
     'menu' => [
-        // Navbar items:
-        
-        [
-            'type' => 'fullscreen-widget',
-            'topnav_right' => true,
-        ],
-
         // Sidebar items:
         [
             'type' => 'sidebar-menu-search',
-            'text' => 'search',
+            'text' => 'Buscar...',
         ],
 
         [
@@ -318,12 +311,23 @@ return [
         'icon' => 'fas fa-home',
         
         ],
+
+        ['header' => 'ADMINISTRACIÓN DE CITAS',
+        'can' => ['crear cita', 'gestionar citas'],
+      ],
         [
             'text' => 'Consultas',
             'url' => '/consultas',
             'icon' => 'fas fa-notes-medical',
             'can' => 'ver consultas',
         
+        ],
+
+        [
+            'text' => 'Historiales Pacientes',
+            'url'  => '/historialclinico?modo=doctor',
+            'icon' => 'fas fa-file-alt',
+            'can'  => 'ver historial pacientes atendidos', 
         ],
         ['header' => 'MI SALUD',
         'can' => 'ver consultas',
@@ -332,8 +336,16 @@ return [
         'text' => 'Agendar Citas',
         'url'  => '/citas',
         'icon' => 'fas fa-calendar-check',
-        'can' => 'crear cita',
+        'can' => ['gestionar citas', 'crear cita'],
        ],
+
+       [
+            'text' => 'Mi Historial Clinico',
+            'url'  => '/historialclinico?modo=paciente',
+            'icon' => 'fas fa-archive',
+            'can'  => 'ver historial clinico propio', 
+        ],
+        
        [
             'text' => 'Gestión de Citas',
             'url'  => 'admin/citas',
@@ -345,16 +357,10 @@ return [
             'text' => 'Gestionar Consultas',
             'url'  => '/consultas',
             'icon' => 'fas fa-calendar-minus',
-            'can'  => 'gestionar citas', 
+            'can'  => 'ver consultas', 
         ],
 
-        [
-            'text' => 'Medicamentos',
-            'url' => 'admin/medicamentos',
-            'icon' => 'fas fa-pills',
-            'can' => 'gestionar medicamentos',
         
-        ],
         ['header' => 'GESTIÓN DE USUARIOS',
         'can' => 'gestionar usuarios',
       ],
@@ -376,6 +382,13 @@ return [
             'icon' => 'fas fa-users',
             'can' => 'gestionar pacientes',
         ],
+
+        [
+            'text' => 'Historiales Clinicos',
+            'url'  => '/historialclinico?modo=admin',
+            'icon' => 'fas fa-folder-open',
+            'can'  => 'gestionar historial clinico', 
+        ],
          ['header' => 'DATOS CLÍNICOS',
          'can' => 'gestionar usuarios',
          ],
@@ -386,7 +399,13 @@ return [
             'can' => 'gestionar enfermedades',
         
         ],
-
+[
+            'text' => 'Medicamentos',
+            'url' => 'admin/medicamentos',
+            'icon' => 'fas fa-pills',
+            'can' => 'gestionar medicamentos',
+        
+        ],
          [
             'text' => 'Especialidades',
             'url'  => '/especialidades',
