@@ -47,6 +47,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     Route::resource('/consultas','App\Http\Controllers\ConsultasController');
     Route::get('/consultas/{codigoConsulta}/medicamentos', [ConsultaMedicamentosController::class, 'index'])->name('Consultas.medicamentos.index');
     Route::post('/consulta/{codigoConsulta}/medicamentos', [ConsultaMedicamentosController::class, 'store'])->name('consultasmedicamentos.store');
+    Route::put('/consultas/{codigoConsulta}/medicamentos', [ConsultaMedicamentosController::class, 'update'])->name('consultasmedicamentos.update');
     Route::resource('/admin/medicamentos','App\Http\Controllers\MedicamentoController')->parameters(['medicamentos' => 'codigoMedicamento']);
     Route::put('/admin/medicamentos','App\Http\Controllers\MedicamentoController@update');
     Route::patch('/usuarios/{id}/cambiar-estado', [App\Http\Controllers\UserController::class, 'cambiarEstado'])->name('usuarios.cambiarEstado');

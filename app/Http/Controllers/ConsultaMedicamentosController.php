@@ -86,16 +86,39 @@ class ConsultaMedicamentosController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateConsultaMedicamentosRequest $request, ConsultaMedicamentos $consultaMedicamentos)
+    public function update(Request $request, $codigoConsulta)
     {
         //
+        $request->validate([
+        'cantidadEntregada' => 'required|integer|min:1',
+        'codigoEntrega' => 'required|exists:consulta_medicamentos,codigoEntrega',
+        ]);
+
+        // Buscar la asignación existente
+        $asignacion = ConsultaMedicamentos::findOrFail($request->codigoEntrega);
+        $medicamento = medicamento::findOrFail($asignacion->codigoMedicamento);
+
+        $cantidadNueva = $request->cantidadEntregada;
+        $cantidadVieja = $asignacion->cantidadEntregada;
+
+        $diferencia = $cantidadNueva - $cantidadVieja; // puede ser positivo o negativo
+
+        // Validar stock si se está aumentando la cantidad asignada
+        if ($diferencia > 0 && $medicamento->stock < $diferencia) {
+            return back()->withErrors(['cantidadEntregada' => 'No hay suficiente stock para aumentar la cantidad.'])
+                        ->withInput();
+        }
+
+        // Actualizar stock
+        $medicamento->stock -= $diferencia;
+        $medicamento->save();
+
+        // Actualizar la asignación
+        $asignacion->cantidadEntregada = $cantidadNueva;
+        $asignacion->save();
+
+        return redirect()->route('Consultas.medicamentos.index', $codigoConsulta)
+        ->with('success', 'Medicamento actualizado correctamente.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(ConsultaMedicamentos $consultaMedicamentos)
-    {
-        //
-    }
 }
