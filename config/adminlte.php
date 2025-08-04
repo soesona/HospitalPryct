@@ -375,13 +375,7 @@ return [
             'icon' => 'fas fa-users',
             'can' => 'gestionar pacientes',
         ],
-
-        [
-            'text' => 'Historiales Clinicos',
-            'url'  => '/historialclinico?modo=admin',
-            'icon' => 'fas fa-folder-open',
-            'can'  => 'gestionar historial clinico', 
-        ],
+        
          ['header' => 'DATOS CLÍNICOS',
          'can' => 'gestionar usuarios',
          ],

@@ -48,15 +48,6 @@ class HistorialesClinicosController extends Controller
                 ->paginate(10);
             break;
 
-        case 'admin':
-            if (!$usuario->hasRole('admin')) {
-                abort(403, 'Acceso denegado.');
-            }
-
-            $historiales = HistorialesClinicos::with(['consulta.paciente.usuario', 'consulta.doctor.user'])
-                ->paginate(10);
-            break;
-
         default:
             abort(400, 'Modo de historial no especificado o inválido.');
     }
