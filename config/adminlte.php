@@ -336,7 +336,7 @@ return [
         'text' => 'Agendar Citas',
         'url'  => '/citas',
         'icon' => 'fas fa-calendar-check',
-        'can' => ['gestionar citas', 'crear cita'],
+        'can' => [ 'crear cita'],
        ],
 
        [

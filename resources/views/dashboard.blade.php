@@ -132,40 +132,50 @@
 
 {{-- dashboard del paciente --}}
 @elseif(Auth::user()->can('ver historial clinico propio'))
-    <p class="text-muted">Este es su panel como Paciente</p>
+    
     <div class="row">
-        <div class="col-md-6">
-            <div class="info-box bg-info">
-                <span class="info-box-icon bg-info"><i class="fas fa-pills"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">Medicamento recetado en la última consulta</span>
-                    <span class="info-box-number">"Texto de prueba: aspirina"</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="info-box bg-success">
-                <span class="info-box-icon bg-success"><i class="far fa-calendar-alt"></i></span>
-                <div class="info-box-content">
-                    <span class="info-box-text">Próxima cita agendada</span>
-                    <span class="info-box-number">--</span>
-                </div>
+    <div class="col-md-6 d-flex">
+        <div class="info-box bg-success w-100">
+            <span class="info-box-icon bg-success"><i class="far fa-calendar-alt"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Próxima cita agendada</span>
+                <span class="info-box-number">{{ $proximaCita ?? 'No hay citas agendadas' }}</span>
             </div>
         </div>
     </div>
 
-    <div class="info-box bg-primary">
-        <span class="info-box-icon"><i class="far fa-calendar-check"></i></span>
-        <div class="info-box-content">
-            <span class="info-box-text">Última consulta</span>
-            <span class="info-box-number" style="font-size: 14px; line-height: 1.3;">
-                Fecha de la ultima consulta: --<br>
-                Especialidad: --<br>
-                Doctor: --
-            </span>
+    <div class="col-md-6 d-flex">
+        <div class="info-box bg-primary w-100">
+            <span class="info-box-icon"><i class="far fa-calendar-check"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Última consulta</span>
+                <span class="info-box-number" style="font-size: 14px; line-height: 1.3;">
+                    Fecha de la ultima consulta: {{ $fechaUltimaConsulta ?? 'Sin consultas previas' }}<br>
+                    Especialidad: {{ ucwords(strtolower($especialidad ?? 'No disponible')) }}<br>
+                    Doctor: {{ ucwords(strtolower($doctor ?? 'No disponible')) }}
+                </span>
+            </div>
         </div>
     </div>
+</div>
+
+    <div class="callout callout-danger">
+        <h5><i class="fas fa-exclamation-triangle"></i> Recordatorio</h5>
+        Por favor, asegúrate de asistir puntualmente a tu cita o cancelar con anticipación.
+    </div>
+
+    <div class="info-box bg-warning">
+    <span class="info-box-icon"><i class="fas fa-heartbeat"></i></span>
+    <div class="info-box-content">
+        <span class="info-box-text">Consejo de salud</span>
+        <span class="info-box-number" style="font-size: 14px; line-height: 1.4;">
+            Toma al menos 8 vasos de agua al día.<br>
+            Realiza actividad física moderada 30 minutos al día.
+        </span>
+    </div>
+</div>
+
+
 
 @else
     <p>No tienes permisos para ver un dashboard.</p>

@@ -8,6 +8,13 @@ use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\Models\Medicamento;
+use Carbon\Carbon;
+use App\Models\HistorialesClinicos;
+use App\Models\Consulta;
+use App\Models\Cita;
+use App\Models\Doctor;
+use App\Models\Paciente;
+use App\Models\Especialidad;
 
 
 class DashboardController extends Controller
@@ -17,6 +24,7 @@ class DashboardController extends Controller
      */
     public function index()
 {
+    Carbon::setLocale('es'); 
     $data = [];
 
     // Para admin o quien pueda gestionar usuarios
@@ -93,62 +101,70 @@ class DashboardController extends Controller
     }
 
     // Para paciente, si tiene permiso para ver su historial clínico
-   /*
-    CUANDO ESTÉ TODO FUNCIONANDO SE EDITARÁ PARA QUE EL DASBOARD QUEDE FUNCIONAL
-
+   
     if (Auth::user()->hasRole('paciente') && Auth::user()->roles->count() === 1) {
-        $paciente = Auth::user()->paciente;
-        if ($paciente) {
-            $codigoPaciente = $paciente->codigoPaciente;
-
-            // Último historial clínico con consulta y doctor
-            $ultimoHistorial = \App\Models\HistorialClinico::where('codigoPaciente', $codigoPaciente)
-                ->with(['consulta.doctor'])
-                ->orderByDesc('fechaRegistro')
-                ->first();
-
-            $data['medicamentoRecetado'] = 'Sin medicamentos registrados';
-            $data['fechaUltimaConsulta'] = 'Sin consultas previas';
-            $data['especialidad'] = 'No disponible';
-            $data['doctor'] = 'No disponible';
-
-            if ($ultimoHistorial && $ultimoHistorial->consulta) {
-                $consulta = $ultimoHistorial->consulta;
-                $data['fechaUltimaConsulta'] = $ultimoHistorial->fechaRegistro->format('d M Y');
-                $data['doctor'] = $consulta->doctor->nombre ?? 'Sin nombre';
-                $data['especialidad'] = $consulta->doctor->especialidad ?? 'Sin especialidad';
-
-                $consultaMedicamento = \App\Models\ConsultaMedicamento::where('codigoConsulta', $consulta->codigoConsulta)
-                    ->with('medicamento')
-                    ->first();
-
-                if ($consultaMedicamento && $consultaMedicamento->medicamento) {
-                    $data['medicamentoRecetado'] = $consultaMedicamento->medicamento->nombre;
-                }
-            }  
-
-            // Próxima cita agendada
-            $proximaCita = \App\Models\Cita::where('codigoPaciente', $codigoPaciente)
-                ->whereDate('fechaCita', '>=', now()->toDateString())
-                ->whereIn('estado', ['pendiente', 'confirmada'])
-                ->orderBy('fechaCita')
-                ->orderBy('horaInicio')
-                ->first();
-
-            $data['proximaCita'] = 'No hay citas agendadas';
-            if ($proximaCita) {
-                $data['proximaCita'] = $proximaCita->fechaCita->format('d M Y') . ' – ' . date('h:i A', strtotime($proximaCita->horaInicio));
-            }
-        } else {
-            $data['medicamentoRecetado'] = 'Sin medicamentos registrados';
-            $data['fechaUltimaConsulta'] = 'Sin consultas previas';
-            $data['especialidad'] = 'No disponible';
-            $data['doctor'] = 'No disponible';
-            $data['proximaCita'] = 'No hay citas agendadas';
+    $paciente = Auth::user()->paciente;
+    if ($paciente) {
+        $codigoPaciente = $paciente->codigoPaciente;
+        
+        // Valores por defecto
+        $data['fechaUltimaConsulta'] = 'Sin consultas previas';
+        $data['doctor'] = 'No disponible';
+        $data['especialidad'] = 'No disponible';
+        
+        // Buscar la última cita finalizada 
+        $ultimaCita = \App\Models\Cita::where('codigoPaciente', $codigoPaciente)
+            ->where('estado', 'finalizada')
+            ->with('doctor.user', 'doctor.especialidad')
+            ->orderByDesc('fechaCita')
+            ->orderByDesc('horaInicio')
+            ->first();
+            
+        if ($ultimaCita && $ultimaCita->doctor) {
+            $data['fechaUltimaConsulta'] = Carbon::parse($ultimaCita->fechaCita)
+                ->locale('es')
+                ->isoFormat('D MMM YYYY');
+            $data['doctor'] = $ultimaCita->doctor->user->nombreCompleto ?? 'Sin nombre';
+            $data['especialidad'] = $ultimaCita->doctor->especialidad->nombre ?? 'Sin especialidad';
         }
-    }
+        
+        // Próxima cita
+        $proximaCita = \App\Models\Cita::where('codigoPaciente', $codigoPaciente)
+            ->whereDate('fechaCita', '>=', now()->toDateString())
+            ->whereIn('estado', ['pendiente', 'confirmada'])
+            ->orderBy('fechaCita')
+            ->orderBy('horaInicio')
+            ->first();
+            
+        $data['proximaCita'] = 'No hay citas agendadas';
+        if ($proximaCita) {
+            $data['proximaCita'] = Carbon::parse($proximaCita->fechaCita)
+                ->locale('es')
+                ->isoFormat('D MMM YYYY') . ' – ' . Carbon::parse($proximaCita->horaInicio)->format('h:i A');
+        }
 
-*/
+        // Próxima cita
+        $proximaCita = \App\Models\Cita::where('codigoPaciente', $codigoPaciente)
+            ->whereDate('fechaCita', '>=', now()->toDateString())
+            ->whereIn('estado', ['pendiente', 'confirmada'])
+            ->orderBy('fechaCita')
+            ->orderBy('horaInicio')
+            ->first();
+
+        $data['proximaCita'] = 'No hay citas agendadas';
+        if ($proximaCita) {
+            $data['proximaCita'] = Carbon::parse($proximaCita->fechaCita)
+                ->locale('es')
+                ->isoFormat('D MMM YYYY') . ' – ' . Carbon::parse($proximaCita->horaInicio)->format('h:i A');
+        }
+    } else {
+        $data['fechaUltimaConsulta'] = 'Sin consultas previas';
+        $data['doctor'] = 'No disponible';
+        $data['especialidad'] = 'No disponible';
+        $data['proximaCita'] = 'No hay citas agendadas';
+    }
+}
+
     return view('dashboard', $data);
 }
 
