@@ -37,6 +37,61 @@ class DashboardController extends Controller
 
     }
 
+
+    // Para doctor o quien pueda ver pacientes asignados
+    if (Auth::user()->can('ver pacientes asignados')) {
+        // Obtener el código del doctor actual
+        $doctor = Auth::user()->doctor; // Relación hasOne en User model
+        $codigoDoctor = $doctor ? $doctor->codigoDoctor : null;
+
+        if ($codigoDoctor) {
+            // 1. Citas para hoy
+            $data['citasHoy'] = \App\Models\Cita::where('codigoDoctor', $codigoDoctor)
+                ->whereDate('fechaCita', today())
+                ->whereIn('estado', [ 'confirmada'])
+                ->count();
+
+            // 2. Pacientes asignados (pacientes únicos que han tenido consulta)
+            $data['pacientesAsignados'] = \App\Models\Consulta::where('codigoDoctor', $codigoDoctor)
+            ->distinct('codigoPaciente')
+            ->count('codigoPaciente');
+
+            // 3. Consultas finalizadas (consultas reales registradas)
+            $data['consultasFinalizadas'] = \App\Models\Consulta::where('codigoDoctor', $codigoDoctor)
+                ->count();
+
+            // 4. Citas pendientes 
+            $data['citasPendientes'] = \App\Models\Cita::where('codigoDoctor', $codigoDoctor)
+                ->whereIn('estado', ['pendiente'])
+                ->whereDate('fechaCita', '>=', today())
+                ->count();
+
+            // 5. Próxima cita de hoy
+            $proximaCitaHoy = \App\Models\Cita::where('codigoDoctor', $codigoDoctor)
+                ->whereDate('fechaCita', today())
+                ->whereIn('estado', [ 'confirmada'])
+                ->with('paciente.usuario') // Relación paciente -> usuario
+                ->orderBy('horaInicio')
+                ->first();
+
+            if ($proximaCitaHoy) {
+                $data['tieneProximaCita'] = true;
+                $data['horaProximaCita'] = date('h:i A', strtotime($proximaCitaHoy->horaInicio));
+                $data['nombrePaciente'] = $proximaCitaHoy->paciente->usuario->nombreCompleto ?? 'Sin nombre';
+                $data['estadoCita'] = ucfirst($proximaCitaHoy->estado);
+            } else {
+                $data['tieneProximaCita'] = false;
+            }
+        } else {
+            // Si no se encuentra el doctor, inicializar con ceros
+            $data['citasHoy'] = 0;
+            $data['pacientesAsignados'] = 0;
+            $data['consultasFinalizadas'] = 0;
+            $data['citasPendientes'] = 0;
+            $data['tieneProximaCita'] = false;
+        }
+    }
+
     // Para paciente, si tiene permiso para ver su historial clínico
    /*
     CUANDO ESTÉ TODO FUNCIONANDO SE EDITARÁ PARA QUE EL DASBOARD QUEDE FUNCIONAL
