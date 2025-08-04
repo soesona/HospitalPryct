@@ -1,3 +1,35 @@
+<?php
+/**
+ * Vista de administración de citas.
+ *
+ * Esta plantilla Blade proporciona la interfaz para gestionar citas médicas en el sistema.
+ * Incluye las siguientes funcionalidades:
+ * - Visualización de todas las citas en una tabla con búsqueda por identidad de paciente.
+ * - Botones para exportar citas a PDF según su estado (pendiente, confirmada, cancelada, todas).
+ * - Modal para agendar nuevas citas, con búsqueda de paciente, selección de especialidad, doctor, fecha y hora.
+ * - Modal para cambiar el estado de una cita (pendiente, confirmada, cancelada), con confirmación previa.
+ * - Manejo de mensajes de éxito, error y validación mediante elementos ocultos y modales de notificación.
+ * - Restricción para editar únicamente citas en estado pendiente.
+ *
+ * Variables esperadas:
+ * - $citas: Colección de citas a mostrar en la tabla.
+ * - $especialidades: Colección de especialidades disponibles para agendar citas.
+ *
+ * Requiere:
+ * - Rutas definidas para la generación de PDFs y almacenamiento de citas.
+ * - Estructura de relaciones en los modelos: cita, paciente, usuario, doctor, especialidad.
+ * - Uso de Carbon para formateo de fechas y horas.
+ *
+ * Modales incluidos:
+ * - Agendar cita
+ * - Cambiar estado de cita
+ * - Confirmación de cambio de estado
+ * - Notificación de mensajes
+ */
+?>
+
+
+
 {{-- VISTA PARA QUE LOS ADMINISTRADORES GESTIONEN LAS CITAS --}}
 
 @extends('adminlte::page')
@@ -71,6 +103,7 @@
 }
 </style>
 @stop
+
 
 @section('content')
 <div class="container-fluid">
@@ -353,6 +386,41 @@
 
 @endsection
 
+{{--
+ * Lógica JavaScript para gestionar el agendamiento y cambio de estado de citas en el panel de administración.
+ *
+ * Funcionalidades:
+ * - Muestra notificaciones de éxito, error y validación usando modales de Bootstrap.
+ * - Permite buscar pacientes por identidad mediante AJAX, mostrando resultados y permitiendo la selección.
+ * - Carga dinámicamente los doctores disponibles según la especialidad y paciente seleccionados.
+ * - Carga las horas disponibles para el doctor y fecha seleccionados, mostrando mensajes informativos.
+ * - Valida el formulario antes de agendar la cita, asegurando que se seleccione paciente y hora.
+ * - Resetea el formulario y campos dependientes al cerrar el modal de agendar cita.
+ * - Gestiona el cambio de estado de citas con modales de confirmación y peticiones AJAX.
+ * - Permite cancelar citas con confirmación y actualización vía AJAX.
+ *
+ * Funciones clave:
+ * - mostrarNotificacion: Muestra el modal de notificación con mensaje e ícono personalizado.
+ * - showInfo: Muestra alertas informativas en los campos del formulario.
+ * - clearDependentFields: Limpia los dropdowns y mensajes dependientes.
+ * - capitalizarTexto: Capitaliza la primera letra de cada palabra en un texto.
+ * - loadAvailableHours: Carga las horas disponibles vía AJAX para el doctor y fecha seleccionados.
+ * - cambiarEstadoCita: Prepara y muestra el modal para cambiar el estado de una cita.
+ * - cancelarCita: Cancela una cita tras confirmación del usuario vía AJAX.
+ *
+ * Manejadores de eventos:
+ * - Input de búsqueda de paciente y selección de resultados.
+ * - Selección de especialidad, doctor y fecha para dropdowns dinámicos.
+ * - Envío de formularios para agendar cita y cambiar estado.
+ * - Eventos de mostrar/ocultar modales para resetear formularios y confirmar acciones.
+ *
+ * Dependencias:
+ * - jQuery
+ * - Bootstrap 4
+ * - FontAwesome (para íconos)
+ * - Laravel Blade para mensajes de sesión y validación del lado del servidor
+ * - Token CSRF para peticiones AJAX
+ --}} 
 @section('js')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>

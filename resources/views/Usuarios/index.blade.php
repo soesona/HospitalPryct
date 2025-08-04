@@ -1,9 +1,45 @@
+<?php
+
+
+    /**
+     * Vista Blade para la gestión de usuarios en el sistema hospitalario.
+     *
+     * Funcionalidades principales:
+     * - Listado de usuarios registrados con paginación y acciones.
+     * - Botón para crear un nuevo usuario (abre modal).
+     * - Exportación de usuarios a PDF.
+     * - Edición de usuario mediante modal con formulario precargado.
+     * - Asignación de roles a usuarios mediante modal con checkboxes.
+     * - Activación/desactivación de usuarios con confirmación.
+     *
+     * Estructura:
+     * - Tabla con los datos principales de cada usuario: ID, nombre completo, email, roles, fecha de creación y acciones.
+     * - Modal para crear usuario con validación y campos requeridos.
+     * - Modal para editar usuario con campos editables y validación.
+     * - Modal para asignar roles, mostrando todos los roles disponibles y los asignados.
+     *
+     * Variables utilizadas:
+     * - $usuarios: Colección de usuarios a mostrar.
+     * - $roles: Colección de roles disponibles para asignar.
+     *
+     * Requiere:
+     * - Rutas definidas para crear, editar, asignar roles, cambiar estado y exportar PDF.
+     * - Uso de métodos y helpers de Laravel para manejo de roles y validaciones.
+     *
+     * Notas:
+     * - Utiliza Bootstrap para estilos y modales.
+     * - Incluye validaciones y mensajes de error para los formularios.
+     */
+?>
+
 @extends('adminlte::page')
 
 @section('title', 'Usuarios')
 
 @section('css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" />
+
+
 
 
 @stop
@@ -200,9 +236,9 @@
 
 <div class="modal fade" id="modalEditarUsuario" tabindex="-1" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
-      <form id="formEditarUsuario" method="POST" class="modal-content">
-            @csrf
-            @method('PUT')
+     <form id="formEditarUsuario" method="POST" class="modal-content" action="">
+    @csrf
+    @method('PUT')
             <div class="modal-header bg-success text-white">
                 <h5 class="modal-title m-0">Editar Usuario</h5>
             </div>
@@ -261,10 +297,50 @@
 
 
 
+{{-- 
+    ============================================================================
+    Sección JavaScript para la vista de índice de Usuarios
+    ============================================================================
+
+    Esta sección incluye y gestiona la lógica JavaScript necesaria para la vista 
+    de listado de usuarios en el sistema. A continuación se detallan sus 
+    funcionalidades principales:
+
+    1. Inclusión de librerías externas:
+       - Simple Datatables: Para la gestión y visualización de tablas dinámicas.
+       - jQuery: Para facilitar la manipulación del DOM y eventos.
+       - Bootstrap: Para el manejo de modales y componentes visuales.
+       - Vite asset: Para la integración de recursos compilados.
+
+    2. Validación de formularios:
+       - Se asegura que, al enviar formularios con la clase 'form-asignar-roles', 
+         se seleccione al menos un rol, evitando envíos incompletos.
+
+    3. Población dinámica de modales:
+       - Al hacer clic en el botón '.EditarUsuario', se llenan los campos del 
+         modal de edición con los datos correspondientes del usuario seleccionado.
+
+    4. Manejo automático de errores:
+       - Si existen errores de validación, se muestra automáticamente el modal 
+         correspondiente ('modalEditarUsuario' o 'modalCrearUsuario') para 
+         facilitar la corrección por parte del usuario.
+
+    5. Lógica de reseteo y limpieza de modales:
+       - Al mostrar u ocultar los modales, se limpian los campos y mensajes de 
+         validación, eliminando clases inválidas y mensajes de error para evitar 
+         interferencias visuales o funcionales.
+
+    NOTA: Este bloque de documentación no interfiere con el código y está 
+    diseñado para facilitar la comprensión y mantenimiento de la lógica JavaScript 
+    implementada en esta sección de la vista.
+--}}
 
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+@vite('resources/js/app.js') 
+
 
 
 <script>
@@ -291,6 +367,7 @@
 
     $('#formEditarUsuario').attr('action', `/usuarios/${codigoUsuario}`);
 
+        console.log('Action URL:', $('#formEditarUsuario').attr('action'));
     $('#codigoUsuario').val(codigoUsuario);
     $('#nombreCompleto').val($(this).data('nombre'));
     $('#email').val($(this).data('email'));
@@ -309,14 +386,21 @@
     @endif
 @endif
 
-$('#modalEditarUsuario').on('hidden.bs.modal', function () {
-  
-    $(this).find('.text-danger').remove();
-    $(this).find('.form-control').removeClass('is-invalid');
-    
-    $(this).find('form')[0].reset();
+$('#modalCrearUsuario').on('show.bs.modal', function () {
+      $(this).find('input:not([type=hidden])').val('');
+    $(this).find('small.text-danger').remove();
 });
 
+$('#modalEditarUsuario').on('show.bs.modal', function () {
+     $(this).find('input:not([type=hidden])').val('');
+    $(this).find('small.text-danger').remove();
+});
+
+$('#modalEditarUsuario').on('hidden.bs.modal', function () {
+    $(this).find('.text-danger').remove();
+    $(this).find('.form-control').removeClass('is-invalid');
+    $(this).find('form')[0].reset();
+});
 
 $('.modal').on('show.bs.modal', function () {
     $(this).find('.text-danger').remove();
@@ -325,5 +409,5 @@ $('.modal').on('show.bs.modal', function () {
 </script>
 
 
- @vite('resources/js/app.js') 
+
 @stop

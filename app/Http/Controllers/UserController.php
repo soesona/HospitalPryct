@@ -70,7 +70,7 @@ class UserController extends Controller
         'codigoUsuario' => $usuario->codigoUsuario,
     ]);
 
-    return redirect('/usuarios');
+    return redirect('/usuarios')->with('success', 'Usuario creado correctamente.');
     }
 
     /**

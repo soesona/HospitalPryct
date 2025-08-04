@@ -1,3 +1,38 @@
+<?php
+/**
+ * Vista Blade para la gestión de doctores en el sistema hospitalario.
+ *
+ * Características principales:
+ * - Muestra una tabla con el listado de doctores, incluyendo información como código, nombre, email, teléfono, estado, especialidad y horarios.
+ * - Permite exportar el listado de doctores a PDF.
+ * - Ofrece acciones para crear o editar el registro de un doctor mediante modales.
+ * - Modal para crear registro de doctor: permite seleccionar especialidad y agregar múltiples horarios.
+ * - Modal para editar registro de doctor: carga los datos existentes y permite modificar especialidad y horarios.
+ * - Notificaciones modales para mostrar éxito o error en las operaciones.
+ * - Validación de datos y manejo de errores de validación en formularios.
+ * - Uso de AJAX para crear y editar registros sin recargar la página.
+ * - Utiliza jQuery, Bootstrap y Simple Datatables para la interacción y presentación.
+ *
+ * Variables esperadas:
+ * - $doctores: Colección de doctores a mostrar en la tabla.
+ * - $especialidades: Colección de especialidades disponibles para selección.
+ *
+ * Rutas utilizadas:
+ * - doctores.pdf: Exportar listado a PDF.
+ * - doctores.crear-registro: Crear nuevo registro de doctor.
+ * - doctores.guardar-registro: Guardar cambios en registro de doctor.
+ * - doctores.obtener-datos/{codigoUsuario}: Obtener datos de doctor para edición.
+ *
+ * Requiere:
+ * - Bootstrap 4.6.2
+ * - jQuery 3.6.0
+ * - Simple Datatables
+ * - Carbon para formateo de fechas en Blade
+ *
+
+ */
+?>
+
 @extends('adminlte::page')
 
 @section('title', 'Doctores')
@@ -6,6 +41,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" />
 
 @stop
+
 
 @section('content_header')
      <h1><span class="font-weight-bold">Listado de Doctores</span></h1>
@@ -209,6 +245,39 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
+{{--
+ * Código JavaScript/jQuery para la gestión de registros de doctores en HospitalPryct.
+ *
+ * Funcionalidades:
+ * - Muestra notificaciones y errores en modales con auto-ocultado.
+ * - Procesa errores de validación en respuestas AJAX.
+ * - Permite agregar y quitar dinámicamente campos de horarios para doctores.
+ * - Limpia y rellena formularios de los modales de creación y edición.
+ * - Envía formularios de creación y edición por AJAX, mostrando retroalimentación en la UI.
+ * - Obtiene datos y horarios del doctor para edición mediante AJAX.
+ * - Valida que se agregue al menos un horario antes de enviar los formularios.
+ *
+ * Funciones clave:
+ * - mostrarNotificacion(titulo, mensaje): Muestra un modal de notificación.
+ * - mostrarError(titulo, mensaje): Muestra un modal de error.
+ * - procesarErroresValidacion(xhr): Extrae mensajes de error de validación de respuestas AJAX.
+ * - crearHorarioHTML(index, dia, inicio, fin): Genera HTML para una fila de horario.
+ * - limpiarModalCrear(): Limpia el formulario del modal de creación.
+ * - limpiarModalEditar(): Limpia el formulario del modal de edición.
+ *
+ * Manejadores de eventos:
+ * - Agrega fila de horario al hacer clic en el botón en los modales de crear/editar.
+ * - Abre el modal de crear/editar y rellena los campos.
+ * - Envía formularios de crear/editar por AJAX y maneja éxito/error.
+ * - Quita fila de horario al hacer clic en el botón correspondiente.
+ *
+ * Dependencias:
+ * - jQuery
+ * - Modales de Bootstrap
+ *
+ * Ubicación:
+ * - resources/views/doctores/index.blade.php
+ --}}
 <script>
 
 $(document).ready(function(){

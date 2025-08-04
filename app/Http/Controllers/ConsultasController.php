@@ -23,6 +23,7 @@ use App\Models\Paciente;
 use App\Models\Enfermedad;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use PDF;
 
 class ConsultasController extends Controller
 {
@@ -165,4 +166,24 @@ class ConsultasController extends Controller
     {
         //
     }
+
+    public function exportarPDF()
+{
+    $usuario = Auth::user();
+    $doctor = $usuario->doctor;
+
+    if (!$doctor) {
+        $consultas = collect();
+        $nombreDoctor = 'No registrado';
+    } else {
+        $consultas = Consulta::with(['paciente.usuario', 'doctor.user', 'enfermedad'])
+            ->where('codigoDoctor', $doctor->codigoDoctor)
+            ->get();
+        $nombreDoctor = $doctor->user->nombreCompleto ?? 'Sin nombre';
+    }
+
+    $pdf = PDF::loadView('reportes.consultasreportes', compact('consultas', 'nombreDoctor'));
+    return $pdf->download('reporte_consultas.pdf');
+}
+
 }

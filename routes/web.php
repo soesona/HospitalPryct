@@ -15,7 +15,7 @@ use App\Http\Controllers\pacienteController;
 use App\Http\Controllers\MedicamentoController;
 use App\Http\Controllers\ConsultaMedicamentosController;
 use App\Http\Controllers\HistorialesClinicosController;
-
+use App\Http\Controllers\ConsultasController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -42,8 +42,13 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     Route::get('/pacientes/pdf', [pacienteController::class, 'exportarPDF'])->name('pacientes.pdf');
     Route::get('/especialidades/pdf', [EspecialidadController::class, 'exportarPDF'])->name('especialidades.pdf');
     Route::get('/medicamentos/pdf', [MedicamentoController::class, 'exportarPDF'])->name('medicamentos.pdf');
+    Route::get('/consultas/pdf', [ConsultasController::class, 'exportarPDF'])->name('consultas.pdf');
 });
-    Route::resource('/usuarios','App\Http\Controllers\UserController');
+    Route::resource('usuarios','App\Http\Controllers\UserController');
+
+
+
+
     Route::resource('/enfermedades','App\Http\Controllers\EnfermedadController');
     Route::resource('/consultas','App\Http\Controllers\ConsultasController');
     Route::get('/consultas/{codigoConsulta}/medicamentos', [ConsultaMedicamentosController::class, 'index'])->name('Consultas.medicamentos.index');
@@ -108,7 +113,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::resource('/pacientes','App\Http\Controllers\pacienteController');
 
     Route::put('/usuarios/asignar-rol/{usuario}', [UserController::class, 'asignarRol'])->name('usuarios.asignarRol');
-    Route::put('/usuarios/{codigoUsuario}', [UserController::class, 'actualizar'])->name('usuarios.actualizar');
+
 
 require __DIR__.'/auth.php';
 

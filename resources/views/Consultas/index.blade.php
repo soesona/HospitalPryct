@@ -16,6 +16,9 @@
         <a href="" class="btn btn-primary" data-toggle="modal" data-target="#modalCrearConsulta">
             <i class="fas fa-plus"></i> Registrar Consulta
         </a>
+        <a href="{{ route('consultas.pdf') }}" class="btn btn-secondary">
+    <i class="fas fa-file-pdf"></i> Exportar PDF
+</a>
     </div>
     <div class="card-body table-responsive">
         <table id="pagination-table" class="table table-bordered table-striped">

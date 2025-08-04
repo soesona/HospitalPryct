@@ -300,7 +300,7 @@ return [
 
     'menu' => [
         // Sidebar items:
-        [
+         [
             'type' => 'sidebar-menu-search',
             'text' => 'Buscar...',
         ],

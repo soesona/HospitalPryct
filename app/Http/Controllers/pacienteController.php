@@ -22,33 +22,43 @@ use PDF;
 class pacienteController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra un listado de los pacientes.
      */
     public function index()
     {
-        //
         $datosPacientes = Paciente::with('usuario')->get();
         return view('pacientes.index')->with('listaPacientes', $datosPacientes);
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    
-    /**
-     * Store a newly created resource in storage.
+     * Almacena un nuevo paciente en la base de datos.
      */
     public function store(Request $request)
     {
-        
+        // Validación de los datos recibidos
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'edad' => 'required|integer',
+            'usuario_id' => 'required|exists:users,id',
+        ]);
+
+        // Crear el paciente
+        Paciente::create([
+            'nombre' => $request->nombre,
+            'edad' => $request->edad,
+            'usuario_id' => $request->usuario_id,
+        ]);
+
+        return redirect()->route('pacientes.index')->with('success', 'Paciente creado correctamente.');
     }
- public function exportarPDF()
+
+    /**
+     * Exporta el listado de pacientes en PDF.
+     */
+    public function exportarPDF()
     {
         $pacientes = Paciente::with('usuario')->get();
         $pdf = \PDF::loadView('reportes.pacientesreportes', compact('pacientes'));
         return $pdf->download('reporte_pacientes.pdf');
     }
-
-   
-  
 }

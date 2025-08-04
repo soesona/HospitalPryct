@@ -1,3 +1,29 @@
+<?php
+/**
+ * Vista Blade para la gestión de especialidades médicas.
+ *
+ * Características principales:
+ * - Muestra una tabla paginada con el listado de especialidades, permitiendo una visualización clara y ordenada.
+ * - Permite registrar nuevas especialidades mediante un modal con validación de entrada en tiempo real.
+ * - Permite editar especialidades existentes mediante un modal, asegurando que los datos sean correctos antes de guardar.
+ * - Exporta el listado de especialidades a PDF para facilitar la generación de reportes y documentación.
+ * - Utiliza AJAX para crear y editar especialidades sin recargar la página, mejorando la experiencia de usuario.
+ * - Muestra notificaciones modales de éxito y error tras las operaciones, brindando retroalimentación inmediata.
+ * - Incluye validaciones en el frontend para permitir solo letras y espacios en los campos de nombre, evitando errores comunes.
+ * - Utiliza Bootstrap para el diseño de los modales y la interfaz, garantizando una apariencia profesional y responsiva.
+ * - Incluye manejo de errores de validación y mensajes personalizados para una comunicación clara con el usuario.
+ * - Integra Simple Datatables para la paginación y ordenamiento de la tabla de especialidades.
+ * - Utiliza FontAwesome para iconos visuales en botones y notificaciones.
+ * - Está basada en Laravel Blade y utiliza rutas definidas en el backend para las operaciones CRUD y exportación.
+ *
+ * Secciones principales:
+ * - content_header: Título de la página y descripción general.
+ * - content: Tabla de especialidades y modales para crear/editar registros.
+ * - js: Scripts para manejo de AJAX, validaciones, notificaciones y funcionalidad de la tabla.
+ */
+
+?>
+
 @extends('adminlte::page')
 
 @section('title', 'Especialidades')
@@ -8,8 +34,11 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 @stop
 
+
+
 @section('content_header')
     <h1><span class="font-weight-bold">Listado de Especialidades</span></h1>
+
 @stop
 
 @section('content')
@@ -143,6 +172,40 @@
 
 @stop
 
+{{-- 
+ * Sección de scripts JavaScript para la vista de especialidades.
+ *
+ * 1. Inclusión de librerías externas:
+ *    - jQuery 3.6.0: Facilita la manipulación del DOM y AJAX.
+ *    - Bootstrap 4.6.2: Proporciona componentes y utilidades de interfaz.
+ *    - Simple Datatables: Permite el manejo de tablas dinámicas.
+ *
+ * 2. Restricción de caracteres en inputs:
+ *    - Permite solo letras y espacios en los campos 'nombreCrear' y 'nombreEditar'.
+ *
+ * 3. Configuración de AJAX:
+ *    - Establece el token CSRF en los encabezados para proteger las peticiones AJAX.
+ *
+ * 4. Funciones de feedback al usuario:
+ *    - mostrarExito: Muestra un modal de éxito con título y mensaje personalizado.
+ *    - mostrarError: Muestra un modal de error con título y mensaje personalizado.
+ *    - procesarErroresValidacion: Extrae y muestra el primer mensaje de error de validación recibido desde el backend.
+ *
+ * 5. Manejo de formularios:
+ *    - formCrearEspecialidad: Envía el formulario de creación por AJAX, muestra feedback y recarga la página al éxito.
+ *    - formEditarEspecialidad: Envía el formulario de edición por AJAX, muestra feedback y recarga la página al éxito.
+ *
+ * 6. Edición de especialidad:
+ *    - btnEditarEspecialidad: Al hacer clic, carga los datos de la especialidad seleccionada en el formulario de edición.
+ *
+ * 7. Limpieza de formularios al cerrar modales:
+ *    - Al cerrar el modal de creación, se resetea el formulario y se eliminan clases de error.
+ *    - Al cerrar el modal de edición, se eliminan clases de error.
+ *
+ * 8. Integración con Vite:
+ *    - Incluye el archivo principal de scripts de la aplicación.
+ *
+    --}}
 @section('js')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -151,7 +214,7 @@
 <script>
 $(document).ready(function(){
 
-    // Permitir solo letras y espacios en ambos inputs
+  
 $('#nombreCrear, #nombreEditar').on('input', function() {
     this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ ]/g, '');
 });
