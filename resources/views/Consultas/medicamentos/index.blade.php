@@ -100,6 +100,11 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        @if ($errors->has('cantidadEntregada') && old('codigoMedicamento'))
+                            <div class="alert alert-danger">
+                                {{ $errors->first('cantidadEntregada') }}
+                            </div>
+                        @endif
                         <div class="form-group">
                             <label for="codigoMedicamento">Medicamento</label>
                             <select name="codigoMedicamento" class="form-control" id="codigoMedicamento" required>
@@ -114,7 +119,7 @@
                         </div>
                         <div class="form-group">
                             <label for="cantidadEntregada">Cantidad Entregada</label>
-                            <input type="number" name="cantidadEntregada" class="form-control" min="1" required>
+                            <input type="number" name="cantidadEntregada" class="form-control @error('cantidadEntregada') is-invalid @enderror" min="1" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -137,4 +142,13 @@
         });
     });
 </script>
+
+@if ($errors->has('cantidadEntregada') && old('codigoMedicamento'))
+<script>
+    $(document).ready(function () {
+        $('#modalAsignar').modal('show');
+    });
+</script>
+@endif
+
 @stop
