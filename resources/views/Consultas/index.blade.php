@@ -146,20 +146,10 @@
             <div class="modal-body">
                 <input type="hidden" name="codigoConsulta" id="codigoConsultaEditar">
                 <div class="form-group">
-                    <label for="codigoCitaEditar">Seleccionar Cita</label>
-                    <select name="codigoCita" id="codigoCitaEditar" class="form-control" required>
-                    <option value="">-- Seleccione una cita --</option>
-                    @foreach ($citas as $cita)
-                        <option 
-                        value="{{ $cita->codigoCita }}"
-                        data-paciente="{{ $cita->codigoPaciente }}"
-                        data-doctor="{{ $cita->codigoDoctor }}">
-                        {{ $cita->codigoCita }} | {{ $cita->fechaCita }} - {{ $cita->paciente->usuario->nombreCompleto ?? 'Sin nombre' }}
-                        </option>
-                    @endforeach
-                    </select>
+                    <label for="codigoCitaEditar">Cita</label>
+                    <input type="text" name="codigoCita" id="codigoCitaEditar" class="form-control" readonly>
                 </div>
-
+                
                 <div class="form-group">
                     <label for="codigoPacienteEditar">Paciente</label>
                     <input type="number" name="codigoPaciente" id="codigoPacienteEditar" class="form-control" readonly required>

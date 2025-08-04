@@ -80,8 +80,8 @@ class ConsultasController extends Controller
         $consulta->codigoPaciente = $request->codigoPaciente;
         $consulta->codigoDoctor = $request->codigoDoctor;
         $consulta->codigoEnfermedad = $request->codigoEnfermedad;
-        $consulta->diagnostico = $request->diagnostico;
-        $consulta->observaciones = $request->observaciones;
+        $consulta->diagnostico = strtoupper($request->diagnostico);
+        $consulta->observaciones = strtoupper($request->observaciones);
         $consulta->save();
 
         \App\Models\Cita::where('codigoCita', $request->codigoCita)
@@ -126,8 +126,8 @@ class ConsultasController extends Controller
         $consulta->codigoPaciente = $request->codigoPaciente;
         $consulta->codigoDoctor = $request->codigoDoctor;
         $consulta->codigoEnfermedad = $request->codigoEnfermedad;
-        $consulta->diagnostico = $request->diagnostico;
-        $consulta->observaciones = $request->observaciones;
+        $consulta->diagnostico = strtoupper($request->diagnostico);
+        $consulta->observaciones = strtoupper($request->observaciones);
         $consulta->save();
 
         return redirect()->back()->with('success', 'Consulta actualizada correctamente.');

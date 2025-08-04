@@ -353,13 +353,6 @@ return [
             'can'  => 'gestionar citas', 
         ],
 
-        [
-            'text' => 'Gestionar Consultas',
-            'url'  => '/consultas',
-            'icon' => 'fas fa-calendar-minus',
-            'can'  => 'ver consultas', 
-        ],
-
         
         ['header' => 'GESTIÓN DE USUARIOS',
         'can' => 'gestionar usuarios',
