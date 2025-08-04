@@ -88,6 +88,17 @@ class ConsultasController extends Controller
         ->update(['estado' => 'finalizada']);
 
         return redirect()->back()->with('success', 'Consulta registrada correctamente.');
+
+        // Crear el historial clínico
+        $enfermedad = Enfermedad::find($request->codigoEnfermedad);
+
+        HistorialesClinicos::create([
+        'codigoPaciente' => $request->codigoPaciente,
+        'codigoConsulta' => $consulta->codigoConsulta,
+        'fechaRegistro' => Carbon::now(),
+        'descripcion' => strtoupper('Enfermedad: ' . $enfermedad->nombre . ' | Diagnóstico: ' . $consulta->diagnostico),
+]);
+
     }
 
 
