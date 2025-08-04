@@ -74,12 +74,26 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Gestión de Citas</h2>
-        <button class="btn btn-primary" data-toggle="modal" data-target="#modalAgendarCita">
-            <i class="fas fa-plus"></i> Agendar Nueva Cita
-        </button>
-    </div>
+  <div class="mb-3">
+     <h1><span class="h3 font-weight-bold">Gestión de citas</span></h1>
+
+    <button class="btn btn-primary" data-toggle="modal" data-target="#modalAgendarCita">
+        <i class="fas fa-plus"></i> Agendar Nueva Cita
+    </button>
+
+    <a href="{{ route('citas.pdf', ['estado' => 'pendiente']) }}" class="btn btn-warning">
+        <i class="fas fa-file-pdf"></i> Citas Pendientes
+    </a>
+    <a href="{{ route('citas.pdf', ['estado' => 'confirmada']) }}" class="btn btn-success">
+        <i class="fas fa-file-pdf"></i> Citas Confirmadas
+    </a>
+    <a href="{{ route('citas.pdf', ['estado' => 'cancelada']) }}" class="btn btn-danger">
+        <i class="fas fa-file-pdf"></i> Citas Canceladas
+    </a>
+    <a href="{{ route('citas.pdf') }}" class="btn btn-secondary">
+        <i class="fas fa-file-pdf"></i> Todas las Citas
+    </a>
+</div>
 
     @if ($errors->any())
         <div class="d-none" id="validation-errors">

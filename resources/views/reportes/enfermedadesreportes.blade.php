@@ -39,32 +39,23 @@
         Fecha del reporte: {{ \Carbon\Carbon::now()->format('d/m/Y') }}
     </div>
 
-    <h1>Reporte de Medicamentos</h1>
+    <h1>Reporte de Enfermedades</h1>
 
     <table>
         <thead>
             <tr>
                 <th>Código</th>
                 <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Stock</th>
-                <th>Fecha de Vencimiento</th>
-                <th>Estado</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($medicamentos as $medicamento)
+            @foreach ($enfermedades as $enfermedad)
                 <tr>
-                    <td>{{ $medicamento->codigoMedicamento }}</td>
-                    <td>{{ ucfirst(strtolower($medicamento->nombre)) }}</td>
-                    <td>{{ ucfirst(strtolower($medicamento->descripcion)) }}</td>
-                    <td>{{ $medicamento->stock }}</td>
-                    <td>{{ $medicamento->fechaVencimiento }}</td>
-                    <td>{{ $medicamento->activo ? 'Activo' : 'Descontinuado' }}</td>
+                    <td>{{ $enfermedad->codigoEnfermedad }}</td>
+                    <td>{{ ucfirst(strtolower($enfermedad->nombre)) }}</td>
                 </tr>
             @endforeach
         </tbody>
     </table>
 
 </body>
-</html>

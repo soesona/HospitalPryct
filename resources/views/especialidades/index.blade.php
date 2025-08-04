@@ -9,7 +9,7 @@
 @stop
 
 @section('content_header')
-    <h1 class="mb-3">Listado de Especialidades</h1>
+    <h1><span class="font-weight-bold">Listado de Especialidades</span></h1>
 @stop
 
 @section('content')
@@ -18,10 +18,14 @@
             <button class="btn btn-primary" data-toggle="modal" data-target="#modalCrearEspecialidad">
                 <i class="fas fa-plus"></i> Registrar Nueva Especialidad
             </button>
+
+            <a href="{{ route('especialidades.pdf') }}" class="btn btn-secondary">
+            <i class="fas fa-file-pdf"></i> Exportar PDF
+        </a>
         </div>
 
         <div class="card-body">
-            <table id="tablaEspecialidades" class="table table-bordered table-hover table-striped">
+            <table id="pagination-table" class="table table-bordered table-hover table-striped">
                 <thead class="thead-dark">
                     <tr>
                         <th>Código</th>
@@ -33,7 +37,7 @@
                     @foreach ($especialidades as $especialidad)
                         <tr>
                             <td>{{ $especialidad->codigoEspecialidad }}</td>
-                            <td>{{ ucfirst(strtolower($especialidad->nombre)) }}</td>
+                            <td>{{ ucwords(strtolower($especialidad->nombre)) }}</td>
                             <td>
                                 <button class="btn btn-warning btn-sm btnEditarEspecialidad"
                                     data-toggle="modal" data-target="#modalEditarEspecialidad"
@@ -142,6 +146,7 @@
 @section('js')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
 
 <script>
 $(document).ready(function(){
@@ -286,5 +291,5 @@ $('#nombreCrear, #nombreEditar').on('input', function() {
     
 });
 </script>
-
+ @vite('resources/js/app.js') 
 @stop

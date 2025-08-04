@@ -8,6 +8,7 @@ use App\Models\Especialidad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use PDF;
 
 class CitaController extends Controller
 {
@@ -190,4 +191,24 @@ class CitaController extends Controller
 
         return response()->json($horasDisponibles);
     }
+    
+public function exportarPDF($estado = null)
+
+{
+    $query = Cita::with(['paciente.usuario', 'doctor.user', 'doctor.especialidad']);
+
+    if ($estado) {
+        $query->where('estado', $estado);
+    }
+
+    $citas = $query->orderBy('fechaCita')->orderBy('horaInicio')->get();
+
+    $pdf = PDF::loadView('reportes.citasreportes', compact('citas', 'estado'));
+
+    return $pdf->download('reporte_citas_' . ($estado ?? 'todas') . '.pdf');
+
+
+}
+
+
 }
