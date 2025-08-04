@@ -13,6 +13,8 @@ use App\Http\Controllers\AdminCitaController;
 use App\Http\Controllers\EnfermedadController;
 use App\Http\Controllers\pacienteController;
 use App\Http\Controllers\MedicamentoController;
+use App\Http\Controllers\ConsultaMedicamentosController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -43,6 +45,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     Route::resource('/usuarios','App\Http\Controllers\UserController');
     Route::resource('/enfermedades','App\Http\Controllers\EnfermedadController');
     Route::resource('/consultas','App\Http\Controllers\ConsultasController');
+    Route::get('/consultas/{codigoConsulta}/medicamentos', [ConsultaMedicamentosController::class, 'index'])->name('Consultas.medicamentos.index');
+    Route::post('/consulta/{codigoConsulta}/medicamentos', [ConsultaMedicamentosController::class, 'store'])->name('consultasmedicamentos.store');
     Route::resource('/admin/medicamentos','App\Http\Controllers\MedicamentoController')->parameters(['medicamentos' => 'codigoMedicamento']);
     Route::put('/admin/medicamentos','App\Http\Controllers\MedicamentoController@update');
     Route::patch('/usuarios/{id}/cambiar-estado', [App\Http\Controllers\UserController::class, 'cambiarEstado'])->name('usuarios.cambiarEstado');

@@ -53,6 +53,10 @@
                             data-observaciones="{{ $consulta->observaciones }}">
                             <i class="fas fa-edit"></i> Editar
                         </button>
+
+                        <a href="{{ url('/consultas/' . $consulta->codigoConsulta . '/medicamentos') }}" 
+                        class="btn btn-info btn-sm">Asignar Medicamentos</a>
+
                     </td>
                 </tr>
                 @endforeach
@@ -74,35 +78,42 @@
             </div>
             <div class="modal-body">
                 <!-- Campos -->
-                <div class="form-group">
+            <div class="form-group">
                 <label for="codigoCitaCrear">Seleccionar Cita</label>
                 <select name="codigoCita" id="codigoCitaCrear" class="form-control" required>
-                <option value="">-- Seleccioná una cita --</option>
+                <option value="">-- Seleccione una cita --</option>
                 @foreach ($citas as $cita)
-            <option 
-                value="{{ $cita->codigoCita }}" 
-                data-paciente="{{ $cita->codigoPaciente }}"
-                data-doctor="{{ $cita->codigoDoctor }}">
-                {{ $cita->codigoCita }} | {{ $cita->fechaCita }} - {{ $cita->paciente->ususario->name ?? 'Sin nombre' }}
-            </option>
-        @endforeach
-    </select>
-</div>
+                <option 
+                    value="{{ $cita->codigoCita }}" 
+                    data-paciente="{{ $cita->codigoPaciente }}"
+                    data-doctor="{{ $cita->codigoDoctor }}">
+                    {{ $cita->codigoCita }} | {{ $cita->fechaCita }} - {{ $cita->paciente->usuario->nombreCompleto ?? 'Sin nombre' }}
+                </option>
+                @endforeach
+                </select>
+            </div>
 
-<div class="form-group">
-    <label for="codigoPacienteCrear">Código de Paciente</label>
-    <input type="number" name="codigoPaciente" id="codigoPacienteCrear" class="form-control" readonly required>
-</div>
+            <div class="form-group">
+                <label for="codigoPacienteCrear">Paciente</label>
+                <input type="number" name="codigoPaciente" id="codigoPacienteCrear" class="form-control" readonly required>
+            </div>
 
-<div class="form-group">
-    <label for="codigoDoctorCrear">Código de Doctor</label>
-    <input type="number" name="codigoDoctor" id="codigoDoctorCrear" class="form-control" readonly required>
-</div>
+            <div class="form-group">
+                <label for="codigoDoctorCrear">Código de Doctor</label>
+                <input type="number" name="codigoDoctor" id="codigoDoctorCrear" class="form-control" readonly required>
+            </div>
 
-                <div class="form-group">
-                    <label for="codigoEnfermedadCrear">Código de Enfermedad</label>
-                    <input type="number" name="codigoEnfermedad" id="codigoEnfermedadCrear" class="form-control" required>
+               <div class="form-group">
+                <label for="codigoEnfermedadCrear">Seleccionar Enfermedad</label>
+                <select name="codigoEnfermedad" id="codigoEnfermedadCrear" class="form-control" required>
+                <option value="">-- Seleccione una enfermedad --</option>
+                 @foreach ($enfermedades as $enfermedad)
+                    <option value="{{ $enfermedad->codigoEnfermedad }}">
+                        {{$enfermedad->codigoEnfermedad}}: {{ucfirst(strtolower($enfermedad->nombre ))}}</option>
+                @endforeach
+                </select>
                 </div>
+
                 <div class="form-group">
                     <label for="diagnosticoCrear">Diagnóstico</label>
                     <textarea name="diagnostico" id="diagnosticoCrear" class="form-control" required></textarea>
@@ -134,23 +145,42 @@
             </div>
             <div class="modal-body">
                 <input type="hidden" name="codigoConsulta" id="codigoConsultaEditar">
-                <!-- Campos -->
                 <div class="form-group">
-                    <label for="codigoCitaEditar">Código de Cita</label>
-                    <input type="number" name="codigoCita" id="codigoCitaEditar" class="form-control" required>
+                    <label for="codigoCitaEditar">Seleccionar Cita</label>
+                    <select name="codigoCita" id="codigoCitaEditar" class="form-control" required>
+                    <option value="">-- Seleccione una cita --</option>
+                    @foreach ($citas as $cita)
+                        <option 
+                        value="{{ $cita->codigoCita }}"
+                        data-paciente="{{ $cita->codigoPaciente }}"
+                        data-doctor="{{ $cita->codigoDoctor }}">
+                        {{ $cita->codigoCita }} | {{ $cita->fechaCita }} - {{ $cita->paciente->usuario->nombreCompleto ?? 'Sin nombre' }}
+                        </option>
+                    @endforeach
+                    </select>
                 </div>
+
                 <div class="form-group">
-                    <label for="codigoPacienteEditar">Código de Paciente</label>
-                    <input type="number" name="codigoPaciente" id="codigoPacienteEditar" class="form-control" required>
+                    <label for="codigoPacienteEditar">Paciente</label>
+                    <input type="number" name="codigoPaciente" id="codigoPacienteEditar" class="form-control" readonly required>
                 </div>
+
                 <div class="form-group">
-                    <label for="codigoDoctorEditar">Código de Doctor</label>
-                    <input type="number" name="codigoDoctor" id="codigoDoctorEditar" class="form-control" required>
+                    <label for="codigoDoctorEditar">Doctor</label>
+                    <input type="number" name="codigoDoctor" id="codigoDoctorEditar" class="form-control" readonly required>
                 </div>
+
                 <div class="form-group">
-                    <label for="codigoEnfermedadEditar">Código de Enfermedad</label>
-                    <input type="number" name="codigoEnfermedad" id="codigoEnfermedadEditar" class="form-control" required>
+                    <label for="codigoEnfermedadEditar">Seleccionar Enfermedad</label>
+                    <select name="codigoEnfermedad" id="codigoEnfermedadEditar" class="form-control" required>
+                    <option value="">-- Seleccionar enfermedad --</option>
+                    @foreach ($enfermedades as $enfermedad)
+                        <option value="{{ $enfermedad->codigoEnfermedad }}">
+                            {{$enfermedad->codigoEnfermedad}}: {{ucfirst(strtolower($enfermedad->nombre ))}}</option>
+                    @endforeach
+                    </select>
                 </div>
+
                 <div class="form-group">
                     <label for="diagnosticoEditar">Diagnóstico</label>
                     <textarea name="diagnostico" id="diagnosticoEditar" class="form-control" required></textarea>
@@ -196,6 +226,16 @@
     $('#codigoPacienteCrear').val(paciente);
     $('#codigoDoctorCrear').val(doctor);
     });
+
+    $('#codigoCitaEditar').on('change', function () {
+    let selected = $(this).find('option:selected');
+    let paciente = selected.data('paciente') || '';
+    let doctor = selected.data('doctor') || '';
+
+    $('#codigoPacienteEditar').val(paciente);
+    $('#codigoDoctorEditar').val(doctor);
+});
+
 
 </script>
 
