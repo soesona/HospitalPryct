@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * Class ConsultaMedicamentosController
+ *
+ * Controlador para gestionar la asignación de medicamentos a consultas médicas.
+ * Permite listar, asignar, y actualizar medicamentos entregados en una consulta.
+ *
+ * Métodos:
+ * - index($codigoConsulta): Muestra la lista de medicamentos asignados a una consulta específica y todos los medicamentos activos disponibles.
+ * - store(Request $request, $codigoConsulta): Valida y almacena una nueva asignación de medicamento a una consulta, actualizando el stock del medicamento.
+ * - update(Request $request, $codigoConsulta): Valida y actualiza la cantidad entregada de un medicamento en una consulta, ajustando el stock según corresponda.
+ *
+ * @package App\Http\Controllers
+ */
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;

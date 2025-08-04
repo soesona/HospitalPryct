@@ -1,5 +1,21 @@
 <?php
 
+/**
+ * Muestra una lista paginada de historiales clínicos según el modo de usuario autenticado.
+ *
+ * Dependiendo del parámetro 'modo' en la consulta, retorna los historiales clínicos
+ * asociados al paciente autenticado o al doctor autenticado.
+ *
+ * - Si el modo es 'paciente', obtiene los historiales del paciente autenticado.
+ * - Si el modo es 'doctor', obtiene los historiales de los pacientes atendidos por el doctor autenticado.
+ * - Si el modo no es válido o no está especificado, retorna un error 400.
+ *
+ * @param  \Illuminate\Http\Request  $request  La solicitud HTTP entrante.
+ * @return \Illuminate\View\View  La vista con la lista de historiales clínicos.
+ *
+ * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+ *         Si el usuario no tiene perfil de paciente o doctor, o si el modo es inválido.
+ */
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;

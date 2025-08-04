@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * Class ConsultasController
+ *
+ * Controlador para gestionar las consultas médicas en el sistema.
+ * Permite listar, registrar y actualizar consultas, así como asociarlas a citas, doctores, pacientes y enfermedades.
+ *
+ * Métodos:
+ * - index(): Muestra un listado de consultas y citas confirmadas para el doctor autenticado.
+ * - store(Request $request): Almacena una nueva consulta en la base de datos, valida los datos y actualiza el estado de la cita.
+ * - update(Request $request, string $id): Actualiza los datos de una consulta existente.
+ *
+ * @package App\Http\Controllers
+ */
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;

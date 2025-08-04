@@ -1,5 +1,36 @@
 <?php
 
+/**
+ * DashboardController
+ *
+ * Controlador encargado de manejar la lógica y los datos que se muestran en el dashboard principal
+ * de la aplicación, adaptando la información según el rol y permisos del usuario autenticado.
+ *
+ * Funcionalidades principales:
+ * - Para administradores o usuarios con permiso "gestionar usuarios":
+ *   - Total de pacientes registrados.
+ *   - Total de doctores registrados.
+ *   - Total de medicamentos activos.
+ *   - Total de doctores activos.
+ *   - Listado de medicamentos con bajo stock (menos de 10 unidades).
+ *
+ * - Para doctores o usuarios con permiso "ver pacientes asignados":
+ *   - Número de citas para el día actual.
+ *   - Número de pacientes asignados (únicos que han tenido consulta).
+ *   - Número de consultas finalizadas.
+ *   - Número de citas pendientes (futuras).
+ *   - Información de la próxima cita del día (hora, paciente, estado).
+ *
+ * - Para pacientes (rol exclusivo "paciente"):
+ *   - Fecha de la última consulta finalizada.
+ *   - Nombre del doctor y especialidad de la última consulta.
+ *   - Información de la próxima cita agendada (fecha y hora).
+ *
+ * Utiliza Eloquent y relaciones entre modelos para obtener la información relevante.
+ * Adapta los datos y mensajes según la disponibilidad de información y el contexto del usuario.
+ *
+ * @package App\Http\Controllers
+ */
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;

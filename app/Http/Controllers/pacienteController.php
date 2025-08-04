@@ -1,13 +1,13 @@
 <?php
 /**
- * Class pacienteController
+ * Clase PacienteController
  *
- * Controller for managing Paciente resources.
+ * Controlador para la gestión de recursos Paciente.
  *
- * Methods:
- * - index(): Display a listing of the Paciente resources with related usuario data.
- * - store(Request $request): Store a newly created Paciente resource in storage.
- * - exportarPDF(): Export the list of Paciente resources with related usuario data as a PDF file.
+ * Métodos:
+ * - index(): Muestra un listado de los recursos Paciente con los datos relacionados del usuario.
+ * - store(Request $request): Almacena un nuevo recurso Paciente en la base de datos.
+ * - exportarPDF(): Exporta la lista de recursos Paciente con los datos relacionados del usuario en un archivo PDF.
  *
  * @package App\Http\Controllers
  */
