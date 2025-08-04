@@ -1,4 +1,16 @@
 <?php
+/**
+ * Class pacienteController
+ *
+ * Controller for managing Paciente resources.
+ *
+ * Methods:
+ * - index(): Display a listing of the Paciente resources with related usuario data.
+ * - store(Request $request): Store a newly created Paciente resource in storage.
+ * - exportarPDF(): Export the list of Paciente resources with related usuario data as a PDF file.
+ *
+ * @package App\Http\Controllers
+ */
 
 namespace App\Http\Controllers;
 

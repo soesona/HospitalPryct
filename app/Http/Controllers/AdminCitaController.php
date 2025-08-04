@@ -1,5 +1,28 @@
 <?php
 
+/**
+ * Controlador AdminCitaController
+ * 
+ * Este controlador gestiona las operaciones administrativas relacionadas con las citas médicas.
+ * Permite a los administradores visualizar, crear, actualizar, cancelar y exportar citas, así como obtener estadísticas y buscar pacientes/doctores.
+ * 
+ * Métodos principales:
+ * 
+ * - index(): Muestra la vista principal de gestión de citas para administradores, listando citas pendientes, confirmadas y canceladas.
+ * - buscarPacientes(Request $request): Busca pacientes por número de identidad (usado en AJAX).
+ * - getDoctoresPorEspecialidad($especialidadId, $pacienteId): Obtiene doctores por especialidad, excluyendo al paciente si también es doctor (usado en AJAX).
+ * - store(Request $request): Almacena una nueva cita creada por el administrador, validando disponibilidad y restricciones.
+ * - cambiarEstado(Request $request, $codigoCita): Cambia el estado de una cita (pendiente, confirmada, cancelada).
+ * - todasLasCitas(): Muestra todas las citas en una vista paginada.
+ * - estadisticas(): Devuelve estadísticas de citas (hoy, pendientes, este mes, confirmadas hoy) en formato JSON.
+ * - cancelarMultiples(Request $request): Cancela múltiples citas seleccionadas.
+ * - exportarCSV(Request $request): Exporta las citas a un archivo CSV en un rango de fechas.
+ * 
+ * Relaciona los modelos: Cita, Doctor, Especialidad, Paciente y User.
+ * Utiliza Carbon para manejo de fechas y horas.
+ * 
+ * @package App\Http\Controllers
+ */
 namespace App\Http\Controllers;
 
 use App\Models\Cita;

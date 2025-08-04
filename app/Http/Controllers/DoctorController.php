@@ -1,5 +1,26 @@
 <?php
 
+/**
+ * Class DoctorController
+ *
+ * Controlador para la gestión de doctores en el sistema.
+ * Permite listar, obtener, crear, editar y exportar información de doctores.
+ *
+ * Métodos:
+ * - index(): Muestra la lista de doctores activos con sus especialidades y horarios.
+ * - obtenerDatos($codigoUsuario): Retorna los datos completos de un doctor específico en formato JSON.
+ * - guardarRegistroCrear(Request $request): Valida y crea un nuevo registro de doctor y sus horarios asociados.
+ * - guardarRegistroEditar(Request $request): Valida y actualiza la información y horarios de un doctor existente.
+ * - exportarPDF(): Genera y descarga un reporte PDF con la información de todos los doctores.
+ *
+ * Dependencias:
+ * - App\Models\User
+ * - App\Models\Doctor
+ * - App\Models\Especialidad
+ * - App\Models\Horarios
+ * - Illuminate\Http\Request
+ * - PDF (dompdf)
+ */
 namespace App\Http\Controllers;
 
 use App\Models\User;

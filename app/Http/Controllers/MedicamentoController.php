@@ -1,4 +1,34 @@
 <?php
+/**
+ * Controlador para la gestión de medicamentos.
+ *
+ * Este controlador maneja las operaciones CRUD para los medicamentos,
+ * incluyendo la validación de datos, el registro, actualización, cambio de estado
+ * y exportación de reportes en PDF.
+ *
+ * Métodos:
+ * - index(): Muestra la lista de medicamentos.
+ * - store(Request $request): Registra un nuevo medicamento con validación personalizada.
+ * - update(Request $request): Actualiza los datos de un medicamento existente con validación personalizada.
+ * - cambiarEstado($codigoMedicamento): Cambia el estado (activo/inactivo) de un medicamento.
+ * - exportarPDF(): Exporta la lista de medicamentos a un archivo PDF.
+ *
+ * Validaciones:
+ * - El nombre del medicamento debe ser único (ignorando mayúsculas/minúsculas y espacios).
+ * - El nombre y la descripción tienen restricciones de formato y longitud.
+ * - El stock debe ser un número entero no negativo.
+ * - La fecha de vencimiento debe ser posterior a la fecha actual (en registro).
+ *
+ * Manejo de errores:
+ * - Devuelve respuestas JSON con mensajes de éxito o error en los métodos store y update.
+ * - Redirecciona con mensajes flash en el cambio de estado.
+ *
+ * Dependencias:
+ * - App\Models\medicamento
+ * - Illuminate\Http\Request
+ * - \PDF (para exportación en PDF)
+ */
+
 
 namespace App\Http\Controllers;
 

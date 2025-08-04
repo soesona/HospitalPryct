@@ -1,5 +1,22 @@
 <?php
 
+/**
+ * Controlador para la gestión de citas médicas.
+ *
+ * Métodos principales:
+ * - index(): Muestra las citas pendientes y confirmadas del paciente autenticado.
+ * - create(): Muestra el formulario para crear una nueva cita.
+ * - store(Request $request): Valida y almacena una nueva cita en la base de datos.
+ * - getDoctoresPorEspecialidad($id): Devuelve los doctores activos de una especialidad (excluyendo al usuario si es doctor).
+ * - getHorasDisponibles($codigoDoctor, $fecha): Devuelve las horas disponibles para un doctor en una fecha específica.
+ * - exportarPDF($estado = null): Exporta un reporte PDF de las citas, filtrando opcionalmente por estado.
+ *
+ * Notas:
+ * - Utiliza relaciones entre usuarios, pacientes, doctores y especialidades.
+ * - Implementa validaciones para evitar duplicidad de citas y conflictos de horarios.
+ * - Incluye soporte para AJAX en la obtención de doctores y horas disponibles.
+ * - Permite la exportación de reportes de citas en formato PDF.
+ */
 namespace App\Http\Controllers;
 
 use App\Models\Cita;

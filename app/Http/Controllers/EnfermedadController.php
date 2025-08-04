@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * Controlador para gestionar las enfermedades en la aplicación.
+ *
+ * Métodos:
+ * - index(): Muestra una lista de todas las enfermedades.
+ * - store(Request $request): Almacena una nueva enfermedad después de validar los datos recibidos.
+ * - update(Request $request, string $id): Actualiza una enfermedad existente con validaciones personalizadas.
+ * - exportarPDF(): Exporta la lista de enfermedades a un archivo PDF.
+ *
+ * Validaciones personalizadas:
+ * - El nombre de la enfermedad es obligatorio, máximo 100 caracteres, formato específico y no debe duplicarse (ignorando mayúsculas/minúsculas).
+ * - El nombre se almacena siempre en mayúsculas.
+ *
+ * @package App\Http\Controllers
+ */
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;

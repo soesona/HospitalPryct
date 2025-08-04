@@ -1,4 +1,26 @@
 <?php
+/**
+ * Controlador para gestionar las especialidades médicas.
+ *
+ * Métodos:
+ * - index(): Muestra todas las especialidades.
+ * - store(Request $request): Almacena una nueva especialidad con validación de duplicados y soporte para AJAX.
+ * - update(Request $request, $id): Actualiza una especialidad existente con validación de duplicados y soporte para AJAX.
+ * - exportarPDF(): Exporta el listado de especialidades a un archivo PDF.
+ *
+ * Validaciones:
+ * - El nombre es requerido, debe ser una cadena de máximo 100 caracteres, solo letras y espacios.
+ * - No se permiten nombres duplicados (insensible a mayúsculas/minúsculas).
+ *
+ * Respuestas:
+ * - Soporta respuestas estándar y AJAX (JSON) para operaciones de creación y actualización.
+ *
+ * Excepciones:
+ * - Maneja errores de validación y errores internos, retornando mensajes apropiados según el tipo de petición.
+ *
+ * @package App\Http\Controllers
+ */
+
 
 namespace App\Http\Controllers;
 

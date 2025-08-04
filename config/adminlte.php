@@ -393,13 +393,7 @@ return [
             'icon' => 'fas fa-plus',
             'can'  => 'gestionar especialidades',
         ],
-        ['header' => 'account_settings'],
-        [
-            'text' => 'change_password',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
-        ],
-      
+        
     ],
         
 

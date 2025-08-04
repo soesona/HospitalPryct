@@ -1,4 +1,21 @@
 <?php
+/**
+ * Class UserController
+ *
+ * Controlador para gestionar usuarios en la aplicación.
+ * Proporciona funcionalidades para listar, crear, actualizar, cambiar estado,
+ * asignar roles y exportar usuarios a PDF.
+ *
+ * Métodos:
+ * - index(): Muestra una lista de usuarios y roles.
+ * - store(Request $request): Almacena un nuevo usuario y le asigna el rol de 'Paciente'.
+ * - update(Request $request, string $id): Actualiza la información de un usuario existente.
+ * - cambiarEstado($id): Cambia el estado activo/inactivo de un usuario.
+ * - asignarRol(Request $request, $id): Asigna uno o más roles a un usuario.
+ * - exportarPDF(): Exporta la lista de usuarios a un archivo PDF.
+ *
+ * @package App\Http\Controllers
+ */
 
 namespace App\Http\Controllers;
 
